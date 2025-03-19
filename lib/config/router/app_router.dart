@@ -18,5 +18,11 @@ final appRouter = GoRouter(
       builder: (context, state) => const TimerScreen(),
       ),
 
+    // GoRoute(
+    //   path: '/',
+    //   name: HomeScreen.name ,
+    //   builder: (context, state) => const HomeScreen(),
+    //   ),  
+
   ]
 );
