@@ -13,43 +13,43 @@ sealed class TimerState extends Equatable{
 
 }
 
-final class TimerInitial extends TimerState {
-  const TimerInitial(super.duration, super.rounds, super.restTime, super.currentRounds);
+final class TimerInitialState extends TimerState {
+  const TimerInitialState(super.duration, super.rounds, super.restTime, super.currentRounds);
 
   @override
-  String toString() => 'TimerInitial { duration: $duration } { rounds: $rounds } { restime: $restTime }';
+  String toString() => 'TimerInitialState { duration: $duration } { rounds: $rounds } { restime: $restTime }';
 }
 
-final class TimerRunPause extends TimerState {
-  const TimerRunPause(super.duration, super.rounds, super.restTime, super.currentRounds);
+final class TimerRunPauseState extends TimerState {
+  const TimerRunPauseState(super.duration, super.rounds, super.restTime, super.currentRounds);
 
   @override
-  String toString() => 'TimerRunPause { duration: $duration } { rounds: $rounds } { restime: $restTime }';
+  String toString() => 'TimerRunPauseState { duration: $duration } { rounds: $rounds } { restime: $restTime }';
 }
 
-final class TimerRestPause extends TimerState {
-  const TimerRestPause(super.duration, super.rounds, super.restTime, super.currentRounds);
+final class TimerRestPauseState extends TimerState {
+  const TimerRestPauseState(super.duration, super.rounds, super.restTime, super.currentRounds);
 
   @override
-  String toString() => 'TimerRunPause { duration: $duration } { rounds: $rounds } { restime: $restTime }';
+  String toString() => 'TimerRestPauseState { duration: $duration } { rounds: $rounds } { restime: $restTime }';
 }
 
-final class TimerRunInProgress extends TimerState {
-  const TimerRunInProgress(super.duration, super.rounds, super.restTime, super.currentRounds);
+final class TimerRunInProgressState extends TimerState {
+  const TimerRunInProgressState(super.duration, super.rounds, super.restTime, super.currentRounds);
 
   @override
-  String toString() => 'TimerRunInProgress { duration: $duration } { rounds: $rounds } { restime: $restTime }';
+  String toString() => 'TimerRunInProgressState { duration: $duration } { rounds: $rounds } { restime: $restTime }';
 }
 
-final class TimerRestInProgress extends TimerState {
-  const TimerRestInProgress(super.duration, super.rounds, super.restTime, super.currentRounds);
+final class TimerRestInProgressState extends TimerState {
+  const TimerRestInProgressState(super.duration, super.rounds, super.restTime, super.currentRounds);
 
   @override
-  String toString() => 'TimerRunInProgress { duration: $duration } { rounds: $rounds } { restime: $restTime }';
+  String toString() => 'TimerRestInProgressState { duration: $duration } { rounds: $rounds } { restime: $restTime }';
 }
 
 
-final class TimerRunComplete extends TimerState {
-  const TimerRunComplete() : super(0,0,0,0);
+final class TimerRunCompleteState extends TimerState {
+  const TimerRunCompleteState() : super(0,0,0,0);
 }
 

@@ -68,7 +68,7 @@ class _PreRoundScreenState extends State<PreRoundScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   BlocProvider.of<TimerBloc>(context).add(
-                    TimerStarted(
+                    TimerStartedEvent(
                       duration: roundDuration,
                       rounds: totalRounds,
                       restTime: restDuration,
@@ -86,3 +86,5 @@ class _PreRoundScreenState extends State<PreRoundScreen> {
     );
   }
 }
+
+

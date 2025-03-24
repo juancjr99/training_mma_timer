@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../presentation/screens/screens.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/timer',
+  initialLocation: '/pre_round',
   routes: [
     GoRoute(
       path: '/',
@@ -18,11 +18,11 @@ final appRouter = GoRouter(
       builder: (context, state) => const TimerScreen(),
       ),
 
-    // GoRoute(
-    //   path: '/',
-    //   name: HomeScreen.name ,
-    //   builder: (context, state) => const HomeScreen(),
-    //   ),  
+    GoRoute(
+      path: '/pre_round',
+      name: PreRoundScreen.name ,
+      builder: (context, state) =>  PreRoundScreen(),
+      ),  
 
   ]
 );

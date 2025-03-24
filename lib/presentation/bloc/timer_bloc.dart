@@ -20,16 +20,16 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 
   StreamSubscription<int>? _tickerSubscription;
 
-  TimerBloc({required Ticker ticker}) : _ticker = ticker, super(TimerInitial(0,0,0,0)) {
+  TimerBloc({required Ticker ticker}) : _ticker = ticker, super(TimerInitialState(0,0,0,0)) {
 
-    on<TimerStarted>(_onStarted);
-    on<_TimerTicked>(_onTicked);
-    on<_TimerTickedRest>(_onTickedRest);
-    on<TimerRunPaused>(_onPaused);
-     on<TimerRestPaused>(_onResetPaused);
-    on<TimerReset>(_onReset);
-    on<TimerRunResumed>(_onResumed);
-    on<TimerRestResumed>(_onRestResumed);
+    on<TimerStartedEvent>(_onStarted);
+    on<_TimerTickedEvent>(_onTicked);
+    on<_TimerTickedRestEvent>(_onTickedRest);
+    on<TimerRunPausedEvent>(_onPaused);
+     on<TimerRestPausedEvent>(_onResetPaused);
+    on<TimerResetEvent>(_onReset);
+    on<TimerRunResumedEvent>(_onResumed);
+    on<TimerRestResumedEvent>(_onRestResumed);
   }
 
   @override
@@ -39,7 +39,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   }
 
 
-  void _onStarted(TimerStarted event, Emitter<TimerState> emit) {
+  void _onStarted(TimerStartedEvent event, Emitter<TimerState> emit) {
     print('TimerStarted { duration: ${event.duration} s} { rounds: ${event.rounds}  } { restime: ${event.restTime} s}');
     _rounds = event.rounds;
     _roundDuration = event.duration;
@@ -47,75 +47,75 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     _currentRound =event.currentRound; 
 
 
-    emit(TimerRunInProgress(event.duration, event.rounds, event.restTime,event.currentRound));
+    emit(TimerRunInProgressState(event.duration, event.rounds, event.restTime,event.currentRound));
     _tickerSubscription?.cancel();
     _tickerSubscription = _ticker
         .tick(ticks: event.duration)
-        .listen((duration) => add(_TimerTicked( duration: duration, rounds: _rounds, restTime: _restDuration, currentRound: _currentRound)));
+        .listen((duration) => add(_TimerTickedEvent( duration: duration, rounds: _rounds, restTime: _restDuration, currentRound: _currentRound)));
   }
 
-  void _onPaused(TimerRunPaused event, Emitter<TimerState> emit) {
-    if (state is TimerRunInProgress) {
+  void _onPaused(TimerRunPausedEvent event, Emitter<TimerState> emit) {
+    if (state is TimerRunInProgressState) {
       _tickerSubscription?.pause();
-      emit(TimerRunPause(state.duration, state.rounds, state.restTime, state.currentRounds));
+      emit(TimerRunPauseState(state.duration, state.rounds, state.restTime, state.currentRounds));
     }
   }
 
-  void _onResetPaused(TimerRestPaused event, Emitter<TimerState> emit) {
-    if (state is TimerRestInProgress) {
+  void _onResetPaused(TimerRestPausedEvent event, Emitter<TimerState> emit) {
+    if (state is TimerRestInProgressState) {
       _tickerSubscription?.pause();
-      emit(TimerRestPause(state.duration, state.rounds, state.restTime, state.currentRounds));
+      emit(TimerRestPauseState(state.duration, state.rounds, state.restTime, state.currentRounds));
     }
   }
 
-  void _onResumed(TimerRunResumed resume, Emitter<TimerState> emit) {
-    if (state is TimerRunPause) {
+  void _onResumed(TimerRunResumedEvent resume, Emitter<TimerState> emit) {
+    if (state is TimerRunPauseState) {
       _tickerSubscription?.resume();
-      emit(TimerRunInProgress(state.duration, state.rounds, state.restTime, state.currentRounds));
+      emit(TimerRunInProgressState(state.duration, state.rounds, state.restTime, state.currentRounds));
     }
   }
 
-  void _onRestResumed(TimerRestResumed resume, Emitter<TimerState> emit) {
-    if (state is TimerRestPause) {
+  void _onRestResumed(TimerRestResumedEvent resume, Emitter<TimerState> emit) {
+    if (state is TimerRestPauseState) {
       _tickerSubscription?.resume();
-      emit(TimerRestInProgress(state.duration, state.rounds, state.restTime, state.currentRounds));
+      emit(TimerRestInProgressState(state.duration, state.rounds, state.restTime, state.currentRounds));
     }
   }
 
-  void _onReset(TimerReset event, Emitter<TimerState> emit) {
+  void _onReset(TimerResetEvent event, Emitter<TimerState> emit) {
     _tickerSubscription?.cancel();
     // TODO ARREGLAR EL ERROR DE ABAJO
     // emit(const TimerInitial(_roundDuration));
   }
 
-  void _onTicked(_TimerTicked event, Emitter<TimerState> emit) {
+  void _onTicked(_TimerTickedEvent event, Emitter<TimerState> emit) {
     _currentRound = event.currentRound;
     if (event.duration > 0){
-      emit(TimerRunInProgress(event.duration, event.rounds, event.restTime, state.currentRounds));
+      emit(TimerRunInProgressState(event.duration, event.rounds, event.restTime, state.currentRounds));
     }
     else if( event.duration <= 0 && event.currentRound == event.rounds){
-      emit(TimerRunComplete());
+      emit(TimerRunCompleteState());
     }
     else{
-      emit(TimerRestInProgress(event.duration, event.rounds, event.restTime,event.currentRound));
+      emit(TimerRestInProgressState(event.duration, event.rounds, event.restTime,event.currentRound));
       _tickerSubscription?.cancel();
       _tickerSubscription = _ticker
         .tick(ticks: event.restTime)
-        .listen((restTime) => add(_TimerTickedRest( duration: _roundDuration, rounds: _rounds, restTime: restTime, currentRound: _currentRound)));
+        .listen((restTime) => add(_TimerTickedRestEvent( duration: _roundDuration, rounds: _rounds, restTime: restTime, currentRound: _currentRound)));
   
     } 
   }
 
-  void _onTickedRest(_TimerTickedRest event, Emitter<TimerState> emit) {
+  void _onTickedRest(_TimerTickedRestEvent event, Emitter<TimerState> emit) {
     if(event.restTime > 0 ){
-      emit(TimerRestInProgress(event.duration, event.rounds, event.restTime, state.currentRounds));
+      emit(TimerRestInProgressState(event.duration, event.rounds, event.restTime, state.currentRounds));
     }
     else{
-      emit(TimerRunInProgress(_roundDuration, event.rounds, _restDuration,event.currentRound +1));
+      emit(TimerRunInProgressState(_roundDuration, event.rounds, _restDuration,event.currentRound +1));
               _tickerSubscription?.cancel();
               _tickerSubscription = _ticker
               .tick(ticks: event.duration)
-              .listen((duration) => add(_TimerTicked( duration: duration, rounds: _rounds, restTime: _restDuration, currentRound: event.currentRound +1)));
+              .listen((duration) => add(_TimerTickedEvent( duration: duration, rounds: _rounds, restTime: _restDuration, currentRound: event.currentRound +1)));
     }
     }
 }

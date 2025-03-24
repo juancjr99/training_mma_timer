@@ -37,6 +37,7 @@ dependencies:
   flutter_bloc: ^9.0.0
   go_router: ^14.8.0
   equatable: ^2.0.7
+  animate_do: ^4.2.0
 
 dev_dependencies:
   flutter_test:
@@ -76,10 +77,14 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+    - family: ISOCPEUR
+      fonts:
+        - asset: assets/fonts/ISOCPEUR.ttf
+    - family: Sternbach
+      fonts:
+        - asset: assets/fonts/Sternbach Bold Italic.otf    
+        
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

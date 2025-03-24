@@ -14,78 +14,76 @@ class TimerActions extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ...switch (state) {
-              TimerInitial() => [
+              TimerInitialState() => [
                   FloatingActionButton(
+                    
                     child: const Icon(Icons.play_arrow),
                     onPressed: () => context
                         .read<TimerBloc>()
-                        .add(TimerStarted(duration: 5, rounds: 3, restTime: 3)),
+                        .add(TimerStartedEvent(duration: 5, rounds: 5, restTime: 3)),
                   ),
+                  
                 ],
-              TimerRunInProgress() => [
+              TimerRunInProgressState() => [
                   FloatingActionButton(
-                    backgroundColor: Colors.green,
                     child: const Icon(Icons.pause),
                     onPressed: () =>
-                        context.read<TimerBloc>().add(const TimerRunPaused()),
+                        context.read<TimerBloc>().add(const TimerRunPausedEvent()),
                   ),
                   FloatingActionButton(
                     child: const Icon(Icons.replay),
                     onPressed: () =>
-                        context.read<TimerBloc>().add(const TimerReset()),
+                        context.read<TimerBloc>().add(const TimerResetEvent()),
                   ),
                 ],
 
-                TimerRestInProgress() => [
+                TimerRestInProgressState() => [
                   FloatingActionButton(
-                    backgroundColor: Colors.blue,
                     child: const Icon(Icons.pause),
                     onPressed: () =>
-                        context.read<TimerBloc>().add(const TimerRestPaused()),
+                        context.read<TimerBloc>().add(const TimerRestPausedEvent()),
                   ),
                   FloatingActionButton(
                     child: const Icon(Icons.replay),
                     onPressed: () =>
-                        context.read<TimerBloc>().add(const TimerReset()),
+                        context.read<TimerBloc>().add(const TimerResetEvent()),
                   ),
                 ],
 
 
-              TimerRunPause() => [
+              TimerRunPauseState() => [
                   FloatingActionButton(
-                    backgroundColor: Colors.green,
                     child: const Icon(Icons.play_arrow),
                     onPressed: () =>
-                        context.read<TimerBloc>().add(const TimerRunResumed()),
+                        context.read<TimerBloc>().add(const TimerRunResumedEvent()),
                   ),
                   FloatingActionButton(
                     child: const Icon(Icons.replay),
                     onPressed: () =>
-                        context.read<TimerBloc>().add(const TimerReset()),
+                        context.read<TimerBloc>().add(const TimerResetEvent()),
                   ),
                 ],
 
-                TimerRestPause() => [
+                TimerRestPauseState() => [
                   FloatingActionButton(
-                    backgroundColor: Colors.blue,
                     child: const Icon(Icons.play_arrow),
                     onPressed: () =>
-                        context.read<TimerBloc>().add(const TimerRestResumed()),
+                        context.read<TimerBloc>().add(const TimerRestResumedEvent()),
                   ),
                   FloatingActionButton(
                     child: const Icon(Icons.replay),
                     onPressed: () =>
-                        context.read<TimerBloc>().add(const TimerReset()),
+                        context.read<TimerBloc>().add(const TimerResetEvent()),
                   ),
                 ],
 
 
 
-              TimerRunComplete() => [
+              TimerRunCompleteState() => [
                   FloatingActionButton(
                     child: const Icon(Icons.replay),
                     onPressed: () =>
-                        context.read<TimerBloc>().add(const TimerReset()),
+                        context.read<TimerBloc>().add(const TimerResetEvent()),
                   ),
                 ],
             }

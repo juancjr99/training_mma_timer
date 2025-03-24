@@ -5,8 +5,8 @@ sealed class TimerEvent  {
   const TimerEvent();
 }
 
-final class TimerStarted extends TimerEvent {
-  const TimerStarted({
+final class TimerStartedEvent extends TimerEvent {
+  const TimerStartedEvent({
     required this.duration,
     required this.rounds,
     required this.restTime,
@@ -18,36 +18,36 @@ final class TimerStarted extends TimerEvent {
   final int currentRound = 1;
 }
 
-final class TimerRunPaused extends TimerEvent {
-  const TimerRunPaused();
+final class TimerRunPausedEvent extends TimerEvent {
+  const TimerRunPausedEvent();
 }
 
-final class TimerRestPaused extends TimerEvent {
-  const TimerRestPaused();
+final class TimerRestPausedEvent extends TimerEvent {
+  const TimerRestPausedEvent();
 }
 
-final class TimerRunResumed extends TimerEvent {
-  const TimerRunResumed();
+final class TimerRunResumedEvent extends TimerEvent {
+  const TimerRunResumedEvent();
 }
 
-final class TimerRestResumed extends TimerEvent {
-  const TimerRestResumed();
+final class TimerRestResumedEvent extends TimerEvent {
+  const TimerRestResumedEvent();
 }
 
-class TimerReset extends TimerEvent {
-  const TimerReset();
+class TimerResetEvent extends TimerEvent {
+  const TimerResetEvent();
 }
 
-class _TimerTicked extends TimerEvent {
-  const _TimerTicked({required this.duration, required this.rounds,  required this.restTime, required this.currentRound, });
+class _TimerTickedEvent extends TimerEvent {
+  const _TimerTickedEvent({required this.duration, required this.rounds,  required this.restTime, required this.currentRound, });
   final int duration;
   final int rounds;
   final int restTime;
   final int currentRound;
 }
 
-class _TimerTickedRest extends TimerEvent {
-  const _TimerTickedRest({required this.duration, required this.rounds,  required this.restTime, required this.currentRound, });
+class _TimerTickedRestEvent extends TimerEvent {
+  const _TimerTickedRestEvent({required this.duration, required this.rounds,  required this.restTime, required this.currentRound, });
   final int duration;
   final int rounds;
   final int restTime;
