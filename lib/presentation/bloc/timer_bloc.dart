@@ -26,7 +26,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     on<_TimerTickedEvent>(_onTicked);
     on<_TimerTickedRestEvent>(_onTickedRest);
     on<TimerRunPausedEvent>(_onPaused);
-     on<TimerRestPausedEvent>(_onResetPaused);
+    on<TimerRestPausedEvent>(_onResetPaused);
     on<TimerResetEvent>(_onReset);
     on<TimerRunResumedEvent>(_onResumed);
     on<TimerRestResumedEvent>(_onRestResumed);
@@ -85,7 +85,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   void _onReset(TimerResetEvent event, Emitter<TimerState> emit) {
     _tickerSubscription?.cancel();
     // TODO ARREGLAR EL ERROR DE ABAJO
-    // emit(const TimerInitial(_roundDuration));
+    emit(const TimerInitialState(20, 5, 5, 1));
   }
 
   void _onTicked(_TimerTickedEvent event, Emitter<TimerState> emit) {
@@ -118,4 +118,8 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
               .listen((duration) => add(_TimerTickedEvent( duration: duration, rounds: _rounds, restTime: _restDuration, currentRound: event.currentRound +1)));
     }
     }
+
+
+    
 }
+

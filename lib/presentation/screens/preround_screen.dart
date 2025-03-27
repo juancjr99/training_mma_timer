@@ -18,73 +18,96 @@ class _PreRoundScreenState extends State<PreRoundScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Configurar Entrenamiento")),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
+      body:Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Duración del asalto (segundos)"),
-            Slider(
-              value: roundDuration.toDouble(),
-              min: 30,
-              max: 600,
-              divisions: 19,
-              label: "$roundDuration",
-              onChanged: (value) {
-                setState(() {
-                  roundDuration = value.toInt();
-                });
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 50,
+                  width: 297,
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+
+                  ),
+                )
+              ],
             ),
-            Text("Tiempo de descanso (segundos)"),
-            Slider(
-              value: restDuration.toDouble(),
-              min: 10,
-              max: 180,
-              divisions: 17,
-              label: "$restDuration",
-              onChanged: (value) {
-                setState(() {
-                  restDuration = value.toInt();
-                });
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(onPressed: (){}, icon: const Icon(Icons.sports_mma_outlined,size: 60,),),
+                Column(mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('5:00',style: TextStyle(fontSize: 40, color: Colors.white),),
+                  Text('ROUND TIME',style: TextStyle(fontSize: 20, color: Colors.white),),
+                  
+                  ],),
+
+                OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                ),
+                onPressed: (){},
+                child: const Icon(Icons.add,color: Colors.white,),
+                ),
+                
+                OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                ),
+                onPressed: (){},
+                child: const Icon(Icons.remove,color: Colors.white,),
+                ),
+
+              ],
             ),
-            Text("Número de rounds"),
-            Slider(
-              value: totalRounds.toDouble(),
-              min: 1,
-              max: 10,
-              divisions: 9,
-              label: "$totalRounds",
-              onChanged: (value) {
-                setState(() {
-                  totalRounds = value.toInt();
-                });
-              },
+            Container(height: 1,color: Colors.red,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 100,
+                  width: 297,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF242529),
+                  ),
+                )
+              ],
             ),
-            
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 100,
+                  width: 297,
+                  decoration: BoxDecoration(
+                  color: Color(0xFF242529),
+
+                  ),
+                )
+              ],
+            ),
             SizedBox(height: 20),
             Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  BlocProvider.of<TimerBloc>(context).add(
-                    TimerStartedEvent(
-                      duration: roundDuration,
-                      rounds: totalRounds,
-                      restTime: restDuration,
-                      
-                    ),
-                  );
-                  Navigator.pushNamed(context, '/timer');
-                },
-                child: Text("Iniciar Entrenamiento"),
-              ),
+              child:  OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0),
+                  ),
+                ),
+                onPressed: (){},
+                child: const Text("START", style: TextStyle(color: Colors.white))),
             ),
           ],
         ),
-      ),
     );
   }
 }
-
 
