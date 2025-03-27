@@ -53,8 +53,8 @@ class TimerView extends StatelessWidget {
 
                       Container(
                           height: 87,
-                          child: Center(
-                              child: RoundCardsContainer())),
+                          // child: Center(child: RoundPoster())),
+                          child: Center(child: RoundCardsContainer())),
                       // Center(child: Current_Round()),
                       // Center(child: TimerText()),
                     ],
@@ -157,7 +157,7 @@ class TimerText extends StatelessWidget {
                     .headlineLarge
                     ?.copyWith(fontSize: 95),
               ),
-              TimerRestPauseState() => Text(
+            TimerRestPauseState() => Text(
                 '${_toMinutesStr(restTime)}:${_toSecondsStr(restTime)}',
                 style: Theme.of(context)
                     .textTheme
@@ -179,7 +179,36 @@ String _toMinutesStr(int duration) {
 String _toSecondsStr(int duration) {
   return (duration % 60).floor().toString().padLeft(2, '0');
 }
+//************************************************************* */
+class RoundPoster extends StatelessWidget {
+  const RoundPoster({super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<TimerBloc, TimerState>(
+      buildWhen: (prev, state) => prev.runtimeType != state.runtimeType,
+      builder: (context, state) {
+          final ValueNotifier<bool> startSizeAnimation = ValueNotifier(false);
+
+          // Retrasamos solo el cambio de tamaño (sin afectar la animación de caída)
+          Future.delayed(const Duration(milliseconds: 600), () {
+            startSizeAnimation.value = true;
+          });
+
+        return FadeInDown(
+          duration: Duration(milliseconds: 300),
+          child: Container(width: 250,height: 87,decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                      colors: [Color(0xFFD2AF4A), Color(0xFFD3AD4B)],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    )),)
+          );
+      },
+    );
+  }
+}
+//************************************************************* */
 class RoundCardsContainer extends StatelessWidget {
   const RoundCardsContainer({
     super.key,
@@ -188,8 +217,7 @@ class RoundCardsContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TimerBloc, TimerState>(
-      buildWhen: (prev, state) =>
-          prev.runtimeType != state.runtimeType ,
+      buildWhen: (prev, state) => prev.runtimeType != state.runtimeType,
       builder: (context, state) {
         final rounds = context.select((TimerBloc bloc) => bloc.state.rounds);
         final currentRound =
@@ -199,15 +227,26 @@ class RoundCardsContainer extends StatelessWidget {
           TimerInitialState() =>
             RoundCards(currentRound: currentRound, rounds: rounds),
           // TODO: Handle this case.
-          TimerRunPauseState() => RestCard(currentRound: currentRound, rounds: rounds, text: 'PAUSED',),
+          TimerRunPauseState() => RestCard(
+              currentRound: currentRound,
+              rounds: rounds,
+              text: 'PAUSED',
+            ),
           // TODO: Handle this case.
-          TimerRestPauseState() =>  RestCard(currentRound: currentRound, rounds: rounds, text: ' REST TIME PAUSED',),
+          TimerRestPauseState() => RestCard(
+              currentRound: currentRound,
+              rounds: rounds,
+              text: ' REST TIME PAUSED',
+            ),
           // TODO: Handle this case.
-          TimerRunInProgressState() => RoundCards(currentRound: currentRound, rounds: rounds),
+          TimerRunInProgressState() =>
+            RoundCards(currentRound: currentRound, rounds: rounds),
           // TODO: Handle this case.
-          TimerRestInProgressState() => RestCard(currentRound: currentRound, rounds: rounds, text: 'REST TIME'),
+          TimerRestInProgressState() => RestCard(
+              currentRound: currentRound, rounds: rounds, text: 'REST TIME'),
           // TODO: Handle this case.
-          TimerRunCompleteState() => RoundCards(currentRound: currentRound, rounds: rounds),
+          TimerRunCompleteState() =>
+            RoundCards(currentRound: currentRound, rounds: rounds),
         };
       },
     );
@@ -306,11 +345,10 @@ class RoundCards extends StatelessWidget {
                                                             .textTheme
                                                             .headlineSmall
                                                             ?.copyWith(
-                                                                fontSize: 20,
-                                                                color: Colors
-                                                                    .black,
-                                                                    
-                                                                    ),
+                                                              fontSize: 20,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
                                                       ),
                                                     )
                                                   : null); // Solo el actual tiene texto
@@ -326,8 +364,6 @@ class RoundCards extends StatelessWidget {
         }));
   }
 }
-
-
 
 class RestCard extends StatelessWidget {
   const RestCard({
@@ -346,73 +382,59 @@ class RestCard extends StatelessWidget {
     return Row(
         key: ValueKey(currentRound),
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [ FadeInDown(
-          duration:
-                  Duration(milliseconds: 500), // Escalonado
+        children: [
+          FadeInDown(
+              duration: Duration(milliseconds: 500), // Escalonado
 
-          child: Column(
-            children: [
-              Container(
-                key: ValueKey(currentRound),
-                width: 54,
-                height: 41,
-                margin: const EdgeInsets.symmetric(horizontal: 6.5),
-                            decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                        colors: [
-                                          Color(0xFFD2AF4A),
-                                          Color(0xFFD3AD4B)
-                                        ],
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                      )
-                                ),
-                child: Center(
-                                                          child: Text(
-                                                            'R$currentRound',
-                                                            style: Theme.of(context)
-                                                                .textTheme
-                                                                .headlineSmall
-                                                                ?.copyWith(
-                                                                    fontSize: 20,
-                                                                    color: Colors
-                                                                        .black),
-                                                          ),
-                                                        ),                
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Container(
-                key: ValueKey(text),
-                width: 200,
-                height: 41,
-                margin: const EdgeInsets.symmetric(horizontal: 6.5),
-                                decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                            colors: [
-                                              Color(0xFFD2AF4A),
-                                              Color(0xFFD3AD4B)
-                                            ],
-                                            begin: Alignment.centerLeft,
-                                            end: Alignment.centerRight,
-                                          )
-                                    ),
-                                    child: Center(
-                                                          child: Text(
-                                                            '$text',
-                                                            style: Theme.of(context)
-                                                                .textTheme
-                                                                .headlineSmall
-                                                                ?.copyWith(
-                                                                    fontSize: 20,
-                                                                    color: Colors
-                                                                        .black),
-                                                          ),
-                                                        ),
-              ),
-            ],
-          ))]
-        );
+              child: Column(
+                children: [
+                  Container(
+                    key: ValueKey(currentRound),
+                    width: 54,
+                    height: 41,
+                    margin: const EdgeInsets.symmetric(horizontal: 6.5),
+                    decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                      colors: [Color(0xFFD2AF4A), Color(0xFFD3AD4B)],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    )),
+                    child: Center(
+                      child: Text(
+                        'R$currentRound',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall
+                            ?.copyWith(fontSize: 20, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    key: ValueKey(text),
+                    width: 200,
+                    height: 41,
+                    margin: const EdgeInsets.symmetric(horizontal: 6.5),
+                    decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                      colors: [Color(0xFFD2AF4A), Color(0xFFD3AD4B)],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    )),
+                    child: Center(
+                      child: Text(
+                        '$text',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall
+                            ?.copyWith(fontSize: 20, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ],
+              ))
+        ]);
   }
 }
