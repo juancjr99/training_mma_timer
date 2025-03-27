@@ -13,8 +13,8 @@ class AppTheme{
     
     colorScheme: ColorScheme.dark(
 
-
-      primary:Color(0xFF242529), // Rojo claro UFC
+      primary:Color(0xFF242529),
+      // primary:Color(0xFF242529), // Rojo claro UFC
       secondary: Color(0xFFCE090A), // Rojo fuerte UFC
       onPrimary: Color(0xFFF7F7F7), // Texto sobre `primary`
       // surface: Color(0xFFF7F7F7), // Fondo de la app

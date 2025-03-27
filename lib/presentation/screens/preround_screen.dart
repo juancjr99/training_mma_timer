@@ -1,5 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:training_mma_timer/presentation/bloc/timer_bloc.dart';
 
 class PreRoundScreen extends StatefulWidget {
@@ -17,96 +21,103 @@ class _PreRoundScreenState extends State<PreRoundScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Configurar Entrenamiento")),
+      appBar: AppBar(title: Text("Configurar Entrenamiento"),
+      
+      actions: [  //setting icon  
+        IconButton(
+          icon: Icon(Icons.settings_outlined, color: Color(0xFFCE090A),),
+          onPressed: () {
+            //TODO: Implementar la navegación a la pantalla de configuración
+          },
+        ),
+      ],),
       body:Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: 50,
-                  width: 297,
-                  decoration: BoxDecoration(
-                    color: Colors.black,
 
-                  ),
-                )
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(onPressed: (){}, icon: const Icon(Icons.sports_mma_outlined,size: 60,),),
-                Column(mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('5:00',style: TextStyle(fontSize: 40, color: Colors.white),),
-                  Text('ROUND TIME',style: TextStyle(fontSize: 20, color: Colors.white),),
-                  
-                  ],),
+            Center(child: Text('Duracion de entrenamiento 5:00',style: TextStyle(fontSize: 20, color: Colors.white),)),
 
-                OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                ),
-                onPressed: (){},
-                child: const Icon(Icons.add,color: Colors.white,),
-                ),
-                
-                OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                ),
-                onPressed: (){},
-                child: const Icon(Icons.remove,color: Colors.white,),
-                ),
+            Settings(icon: Icons.timer_outlined,text: 'ROUND TIME',),
 
-              ],
+            Container(
+              height: 1,
+              width: 300,
+              color: Color(0xFFCE090A),
             ),
-            Container(height: 1,color: Colors.red,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: 100,
-                  width: 297,
-                  decoration: BoxDecoration(
-                    color: Color(0xFF242529),
-                  ),
-                )
-              ],
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: 100,
-                  width: 297,
-                  decoration: BoxDecoration(
-                  color: Color(0xFF242529),
 
-                  ),
-                )
-              ],
+            // SizedBox(height: 20),
+            Settings(icon: Icons.hourglass_bottom_rounded,text: 'REST TIME',),
+
+            Container(
+              height: 1,
+              width: 300,
+              color: Color(0xFFCE090A),
             ),
-            SizedBox(height: 20),
-            Center(
-              child:  OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(0),
-                  ),
-                ),
-                onPressed: (){},
-                child: const Text("START", style: TextStyle(color: Colors.white))),
-            ),
+
+            // SizedBox(height: 20),
+            Settings(icon: Icons.sports_mma_outlined,text: 'ROUNDS',),
+
+
           ],
         ),
+        floatingActionButton: FloatingActionButton(
+
+                    child: const Icon(Icons.play_arrow),
+                    onPressed: (){},
+                  ),
+    );
+  }
+}
+
+class Settings extends StatelessWidget {
+  const Settings({
+    Key? key,
+    required this.icon,
+    required this.text,
+  }) : super(key: key);
+final IconData icon;
+final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child:  Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+            children: [
+              IconButton(onPressed: (){}, icon:  Icon(icon,size: 60,),),
+              Column(crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('5:00', style: Theme.of(context)
+                    .textTheme
+                    .headlineLarge
+                    ?.copyWith(fontSize: 40),),
+                Text('$text',style: TextStyle(fontSize: 15, color: Colors.white),),
+                
+                ],),
+          
+              OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0),
+                ),
+              ),
+              onPressed: (){},
+              child: const Icon(Icons.add,color: Colors.white,),
+              ),
+              
+              OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0),
+                ),
+              ),
+              onPressed: (){},
+              child: const Icon(Icons.remove,color: Colors.white,),
+              ),
+          
+            ],
+          ),
     );
   }
 }
