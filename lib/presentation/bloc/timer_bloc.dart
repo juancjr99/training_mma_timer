@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
@@ -11,31 +12,81 @@ part 'timer_state.dart';
 class TimerBloc extends Bloc<TimerEvent, TimerState> {
 
   final Ticker _ticker;
+  final int duration;
+  final int rounds;
+  final int restTime;
 
   int _currentRound = 0;
   int _rounds = 0;
   int _roundDuration = 0;
   int _restDuration = 0;
+  int _preStartDuration = 5;
 
+  final player = AudioPlayer();
 
   StreamSubscription<int>? _tickerSubscription;
 
-  TimerBloc({required Ticker ticker}) : _ticker = ticker, super(TimerInitialState(0,0,0,0)) {
+  TimerBloc({required this.duration,required this.rounds,required this.restTime,required Ticker ticker}) : _ticker = ticker, super(TimerInitialState(duration,rounds,restTime,0)) {
+
+    // on<TimerWarmUpEvent>(_onWarmUp);
+    on<TimerPreStartPausedEvent>(_onPreStartPaused);
+    on<TimerPreStartResumedEvent>(_onPreStartResumed);
+
+    on<_TimerTickedPreStartEvent>(_onTickedPreStart);
 
     on<TimerStartedEvent>(_onStarted);
-    on<_TimerTickedEvent>(_onTicked);
-    on<_TimerTickedRestEvent>(_onTickedRest);
+    on<TimerPreStartedEvent>(_onPreStarted);
+
     on<TimerRunPausedEvent>(_onPaused);
-    on<TimerRestPausedEvent>(_onResetPaused);
-    on<TimerResetEvent>(_onReset);
     on<TimerRunResumedEvent>(_onResumed);
+    on<_TimerTickedEvent>(_onTicked);
+
+  
+    
+    on<TimerRestPausedEvent>(_onResetPaused);
     on<TimerRestResumedEvent>(_onRestResumed);
+    on<_TimerTickedRestEvent>(_onTickedRest);
+
+    on<TimerResetEvent>(_onReset);
+
+    
   }
 
   @override
   Future<void> close() {
     _tickerSubscription?.cancel();
     return super.close();
+  }
+
+  
+  // void _onWarmUp(TimerStartedEvent event, Emitter<TimerState> emit) {
+  //   print('TimerStarted { duration: ${event.duration} s} { rounds: ${event.rounds}  } { restime: ${event.restTime} s}');
+  //   _rounds = event.rounds;
+  //   _roundDuration = event.duration;
+  //   _restDuration = event.restTime;
+  //   _currentRound =event.currentRound; 
+
+
+  //   emit(TimerRunInProgressState(event.duration, event.rounds, event.restTime,event.currentRound));
+  //   _tickerSubscription?.cancel();
+  //   _tickerSubscription = _ticker
+  //       .tick(ticks: event.duration)
+  //       .listen((duration) => add(_TimerTickedEvent( duration: duration, rounds: _rounds, restTime: _restDuration, currentRound: _currentRound)));
+  // }
+
+
+  void _onPreStarted(TimerPreStartedEvent event, Emitter<TimerState> emit) {
+    _rounds = event.rounds;
+    _roundDuration = event.duration;
+    _restDuration = event.restTime;
+    _currentRound =event.currentRound; 
+
+
+    emit(TimerPreStartInProgressState(_preStartDuration, event.rounds, event.restTime,event.currentRound));
+    _tickerSubscription?.cancel();
+    _tickerSubscription = _ticker
+        .tick(ticks: _preStartDuration)
+        .listen((duration) => add(_TimerTickedPreStartEvent( duration: duration, rounds: _rounds, restTime: _restDuration, currentRound: _currentRound)));
   }
 
 
@@ -68,6 +119,14 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     }
   }
 
+  void _onPreStartPaused(TimerPreStartPausedEvent event, Emitter<TimerState> emit) {
+    if (state is TimerPreStartInProgressState) {
+      _tickerSubscription?.pause();
+      emit(TimerPreStartPauseState(state.duration, state.rounds, state.restTime, state.currentRounds));
+    }
+  }
+
+ 
   void _onResumed(TimerRunResumedEvent resume, Emitter<TimerState> emit) {
     if (state is TimerRunPauseState) {
       _tickerSubscription?.resume();
@@ -82,15 +141,26 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     }
   }
 
+  void _onPreStartResumed(TimerPreStartResumedEvent resume, Emitter<TimerState> emit) {
+    if (state is TimerPreStartPauseState) {
+      _tickerSubscription?.resume();
+      emit(TimerPreStartInProgressState(state.duration, state.rounds, state.restTime, state.currentRounds));
+    }
+  }
+
   void _onReset(TimerResetEvent event, Emitter<TimerState> emit) {
     _tickerSubscription?.cancel();
     // TODO ARREGLAR EL ERROR DE ABAJO
     emit(const TimerInitialState(20, 5, 5, 1));
   }
 
-  void _onTicked(_TimerTickedEvent event, Emitter<TimerState> emit) {
+  void _onTicked(_TimerTickedEvent event, Emitter<TimerState> emit) async{
     _currentRound = event.currentRound;
-    if (event.duration > 0){
+    // 🔊 Reproducir sonido
+    if(event.duration <= 3 && event.duration >= 0 ){
+      await player.play(AssetSource('sounds/beep-07a.mp3')); // Asegúrate de tener el archivo en assets
+    }
+    if (event.duration > -1){
       emit(TimerRunInProgressState(event.duration, event.rounds, event.restTime, state.currentRounds));
     }
     else if( event.duration <= 0 && event.currentRound == event.rounds){
@@ -106,8 +176,12 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     } 
   }
 
-  void _onTickedRest(_TimerTickedRestEvent event, Emitter<TimerState> emit) {
-    if(event.restTime > 0 ){
+  void _onTickedRest(_TimerTickedRestEvent event, Emitter<TimerState> emit) async{
+    // 🔊 Reproducir sonido
+    if(event.restTime <= 3 && event.restTime >= 0 ){
+      await player.play(AssetSource('sounds/beep-07a.mp3')); // Asegúrate de tener el archivo en assets
+    }
+    if(event.restTime > -1 ){
       emit(TimerRestInProgressState(event.duration, event.rounds, event.restTime, state.currentRounds));
     }
     else{
@@ -118,6 +192,23 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
               .listen((duration) => add(_TimerTickedEvent( duration: duration, rounds: _rounds, restTime: _restDuration, currentRound: event.currentRound +1)));
     }
     }
+
+  void _onTickedPreStart(_TimerTickedPreStartEvent event, Emitter<TimerState> emit) async{
+    print(event.duration);
+    //Reproducir sonido aqui
+    // 🔊 Reproducir sonido
+    if(event.duration <= 3 && event.duration >= 0 ){
+      await player.play(AssetSource('sounds/beep-07a.mp3')); // Asegúrate de tener el archivo en assets
+    }
+    
+
+    if(event.duration > -1 ){
+      emit(TimerPreStartInProgressState(event.duration, event.rounds, event.restTime, state.currentRounds));
+    }
+    else{
+      emit(TimerStartState(event.duration +1 , _rounds, _restDuration, 0));
+    }
+    }  
 
 
     

@@ -18,9 +18,31 @@ final class TimerStartedEvent extends TimerEvent {
   final int currentRound = 1;
 }
 
+final class TimerPreStartedEvent extends TimerEvent {
+  const TimerPreStartedEvent({
+    required this.duration,
+    required this.rounds,
+    required this.restTime,
+    });
+
+  final int duration;
+  final int rounds;
+  final int restTime;
+  final int currentRound = 1;
+}
+
+// final class TimerWarmUpEvent extends TimerEvent {
+//   const TimerWarmUpEvent();
+// }
+
 final class TimerRunPausedEvent extends TimerEvent {
   const TimerRunPausedEvent();
 }
+
+final class TimerPreStartPausedEvent extends TimerEvent {
+  const TimerPreStartPausedEvent();
+}
+
 
 final class TimerRestPausedEvent extends TimerEvent {
   const TimerRestPausedEvent();
@@ -32,6 +54,10 @@ final class TimerRunResumedEvent extends TimerEvent {
 
 final class TimerRestResumedEvent extends TimerEvent {
   const TimerRestResumedEvent();
+}
+
+final class TimerPreStartResumedEvent extends TimerEvent {
+  const TimerPreStartResumedEvent();
 }
 
 class TimerResetEvent extends TimerEvent {
@@ -54,3 +80,11 @@ class _TimerTickedRestEvent extends TimerEvent {
   final int currentRound;
 }
 
+
+class _TimerTickedPreStartEvent extends TimerEvent {
+  const _TimerTickedPreStartEvent({required this.duration, required this.rounds,  required this.restTime, required this.currentRound, });
+final int duration;
+  final int rounds;
+  final int restTime;
+  final int currentRound;
+}

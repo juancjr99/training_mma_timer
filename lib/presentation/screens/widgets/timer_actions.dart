@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:training_mma_timer/presentation/bloc/timer_bloc.dart';
+import 'package:training_mma_timer/presentation/cubit/timer_cubit.dart';
 
 class TimerActions extends StatelessWidget {
-  const TimerActions({super.key});
-
+  const TimerActions({super.key, required this.timerCubit});
+  final TimerCubit timerCubit;
   void openDialog(BuildContext context){
     final timerBloc = context.read<TimerBloc>(); // Guarda el Bloc antes de abrir el diálogo
 
@@ -36,6 +37,11 @@ class TimerActions extends StatelessWidget {
     return BlocBuilder<TimerBloc, TimerState>(
       buildWhen: (prev, state) => prev.runtimeType != state.runtimeType,
       builder: (context, state) {
+        if(state is TimerStartState){
+          context
+              .read<TimerBloc>()
+              .add(TimerStartedEvent(duration: timerCubit.state.duration, rounds: timerCubit.state.rounds, restTime: timerCubit.state.restTime));
+        }
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -46,7 +52,7 @@ class TimerActions extends StatelessWidget {
                     child: const Icon(Icons.play_arrow),
                     onPressed: () => context
                         .read<TimerBloc>()
-                        .add(TimerStartedEvent(duration: 10, rounds: 5, restTime: 5)),
+                        .add(TimerStartedEvent(duration: timerCubit.state.duration, rounds: timerCubit.state.rounds, restTime: timerCubit.state.restTime)),
                   ),
 
 
@@ -141,6 +147,41 @@ class TimerActions extends StatelessWidget {
                         context.read<TimerBloc>().add(const TimerResetEvent()),
                   ),
                 ],
+              // TODO: Handle this case.
+              TimerPreStartPauseState() => [
+                  FadeInRight(
+                    duration: Duration(milliseconds: 200),
+                    child: FloatingActionButton(
+                      child: const Icon(Icons.play_arrow),
+                      onPressed: () =>
+                          context.read<TimerBloc>().add(const TimerPreStartResumedEvent()),
+                    ),
+                  ),
+
+                  FadeInLeft(
+                    duration: Duration(milliseconds: 200),
+                    child: FloatingActionButton(
+                        child: const Icon(Icons.cancel_rounded),
+                        onPressed: () { 
+                          context.read<TimerBloc>().add(const TimerPreStartPausedEvent());
+                          openDialog(context);
+                          }
+                            // context.read<TimerBloc>().add(const TimerResetEvent()),
+                      ),
+                  ),],
+              // TODO: Handle this case.
+              TimerPreStartInProgressState() => [
+                  FloatingActionButton(
+                    child: const Icon(Icons.pause),
+                    onPressed: () =>
+                        context.read<TimerBloc>().add(const TimerPreStartPausedEvent()),
+                  ),],
+              // TODO: Handle this case.
+              TimerStartState() => [FloatingActionButton(
+                    child: const Icon(Icons.pause),
+                    onPressed: () =>
+                        context.read<TimerBloc>().add(const TimerRestPausedEvent()),
+                  )],
             }
           ],
         );
