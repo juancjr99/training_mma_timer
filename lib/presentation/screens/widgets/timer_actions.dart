@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:training_mma_timer/presentation/bloc/timer_bloc.dart';
-import 'package:training_mma_timer/presentation/cubit/timer_cubit.dart';
+import 'package:training_mma_timer/presentation/cubit/timer_cubit/timer_cubit.dart';
 
 class TimerActions extends StatelessWidget {
   const TimerActions({super.key, required this.timerCubit});
@@ -21,8 +21,10 @@ class TimerActions extends StatelessWidget {
         
           FilledButton(
             onPressed: (){ 
-              timerBloc.add(TimerResetEvent());
+              timerBloc.add(TimerFinishEvent());
               context.pop();
+              context.pop(); // Solo cierra la pantalla si es posible
+
             },
             child: const Text('Si',  style: TextStyle(color: Colors.white)),
             style: FilledButton.styleFrom(backgroundColor:  Color(0xFFCE090A),),
@@ -142,10 +144,12 @@ class TimerActions extends StatelessWidget {
 
               TimerRunCompleteState() => [
                   FloatingActionButton(
-                    child: const Icon(Icons.replay),
-                    onPressed: () =>
-                        context.read<TimerBloc>().add(const TimerResetEvent()),
-                  ),
+              backgroundColor: Color(0xFFCE090A),
+              child: Icon(Icons.arrow_back_ios_new),
+              onPressed: () {
+                context.pop();
+              },
+            )
                 ],
               // TODO: Handle this case.
               TimerPreStartPauseState() => [

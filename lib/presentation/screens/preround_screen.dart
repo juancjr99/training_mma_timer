@@ -1,13 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:training_mma_timer/config/helpers/timer_format.dart';
 
-import 'package:training_mma_timer/presentation/bloc/timer_bloc.dart';
-import 'package:training_mma_timer/presentation/cubit/timer_cubit.dart';
+
+import 'package:training_mma_timer/presentation/cubit/timer_cubit/timer_cubit.dart';
 
 class PreRoundScreen extends StatelessWidget {
   static const name = 'PreRound Scree';
@@ -29,7 +28,7 @@ class PreRoundScreen extends StatelessWidget {
                 color: Color(0xFFCE090A),
               ),
               onPressed: () {
-                //TODO: Implementar la navegación a la pantalla de configuración
+                context.push('/settings');
               },
             ),
           ],

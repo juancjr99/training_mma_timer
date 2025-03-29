@@ -7,9 +7,9 @@ final appRouter = GoRouter(
   initialLocation: '/pre_round',
   routes: [
     GoRoute(
-      path: '/',
-      name: HomeScreen.name ,
-      builder: (context, state) => const HomeScreen(),
+      path: '/settings',
+      name: SettingsScreen.name ,
+      builder: (context, state) => const SettingsScreen(),
       ),
     
     GoRoute(

@@ -64,6 +64,10 @@ class TimerResetEvent extends TimerEvent {
   const TimerResetEvent();
 }
 
+class TimerFinishEvent extends TimerEvent {
+  const TimerFinishEvent();
+}
+
 class _TimerTickedEvent extends TimerEvent {
   const _TimerTickedEvent({required this.duration, required this.rounds,  required this.restTime, required this.currentRound, });
   final int duration;

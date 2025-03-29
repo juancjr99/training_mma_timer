@@ -8,7 +8,8 @@ import 'package:training_mma_timer/config/helpers/ticker.dart';
 
 import 'package:training_mma_timer/config/helpers/timer_format.dart';
 import 'package:training_mma_timer/presentation/bloc/timer_bloc.dart';
-import 'package:training_mma_timer/presentation/cubit/timer_cubit.dart';
+import 'package:training_mma_timer/presentation/cubit/settings_cubit/settings_cubit.dart';
+import 'package:training_mma_timer/presentation/cubit/timer_cubit/timer_cubit.dart';
 import 'package:training_mma_timer/presentation/screens/widgets/timer_actions.dart';
 
 import 'widgets/widgets.dart';
@@ -21,9 +22,14 @@ class TimerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Obtener el TimerCubit pasado como extra
     final timerCubit = context.read<TimerCubit>();
+    final settingsCubit = context.read<SettingsCubit>();
     return BlocProvider(
       create: (_) => TimerBloc(
-        ticker: Ticker(), 
+        ticker: Ticker(),
+        isSound: settingsCubit.state.isSound,
+        isAlert: settingsCubit.state.isAlert,
+        isRotation: settingsCubit.state.isRotation,
+        isVibration: settingsCubit.state.isVibration, 
         duration: timerCubit.state.duration,
         rounds: timerCubit.state.rounds,
         restTime: timerCubit.state.restTime,
@@ -168,7 +174,13 @@ class TimerText extends StatelessWidget {
                     .headlineLarge
                     ?.copyWith(fontSize: 95),
               ),
-            TimerRunCompleteState() => const SizedBox.shrink(),
+            TimerRunCompleteState() => Text(
+                'FIN',
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineLarge
+                    ?.copyWith(fontSize: 95),
+              ),
             TimerRunPauseState() => Text(
                 '${toMinutesStr(duration)}:${toSecondsStr(duration)}',
                 style: Theme.of(context)
@@ -253,11 +265,11 @@ class RoundCardsContainer extends StatelessWidget {
           TimerRunCompleteState() =>
             RoundCards(currentRound: currentRound, rounds: rounds),
           // TODO: Handle this case.
-          TimerPreStartPauseState() =>  Poster(text: 'Ready',),
+          TimerPreStartPauseState() =>  Poster(text: 'Paused',timeDelay: 0,),
           // TODO: Handle this case.
-          TimerPreStartInProgressState() => Poster(text: 'Ready',),
+          TimerPreStartInProgressState() => Poster(text: 'Get Ready', timeDelay: 600,),
           // TODO: Handle this case.
-          TimerStartState() =>  Poster(text: 'Ready',),
+          TimerStartState() =>  Poster(text: 'Get Ready',timeDelay: 0),
         };
       },
     );
@@ -454,9 +466,9 @@ class RestCard extends StatelessWidget {
 class Poster extends StatelessWidget {
   const Poster({
     super.key,
-    required this.text,
+    required this.text, required this.timeDelay,
   });
-
+  final int timeDelay;
   final String text;
 
 
@@ -465,7 +477,7 @@ class Poster extends StatelessWidget {
     final ValueNotifier<bool> startSizeAnimation = ValueNotifier(false);
 
           // Retrasamos solo el cambio de tamaño (sin afectar la animación de caída)
-          Future.delayed(const Duration(milliseconds: 600), () {
+          Future.delayed( Duration(milliseconds: timeDelay), () {
             startSizeAnimation.value = true;
           });
 

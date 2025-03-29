@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:training_mma_timer/config/helpers/ticker.dart';
+import 'package:vibration/vibration.dart';
 
 part 'timer_event.dart';
 part 'timer_state.dart';
@@ -16,6 +18,11 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   final int rounds;
   final int restTime;
 
+  final bool isSound ;
+  final bool isVibration;
+  final bool isRotation;
+  final bool isAlert;
+
   int _currentRound = 0;
   int _rounds = 0;
   int _roundDuration = 0;
@@ -23,16 +30,29 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   int _preStartDuration = 5;
 
   final player = AudioPlayer();
+  final assetSource = AssetSource('sounds/beep-07a.mp3');
 
   StreamSubscription<int>? _tickerSubscription;
 
-  TimerBloc({required this.duration,required this.rounds,required this.restTime,required Ticker ticker}) : _ticker = ticker, super(TimerInitialState(duration,rounds,restTime,0)) {
+  TimerBloc({
+    required this.isSound,
+    required this.isVibration,
+    required this.isRotation,
+    required this.isAlert, 
+    required this.duration,
+    required this.rounds,
+    required this.restTime,
+    required Ticker ticker}) : _ticker = ticker, super(TimerInitialState(duration,rounds,restTime,0)) {
+
+     // Precargar sonido una vez
+    _preloadSound();
 
     // on<TimerWarmUpEvent>(_onWarmUp);
     on<TimerPreStartPausedEvent>(_onPreStartPaused);
     on<TimerPreStartResumedEvent>(_onPreStartResumed);
 
     on<_TimerTickedPreStartEvent>(_onTickedPreStart);
+    on<TimerFinishEvent>(_onFinish);
 
     on<TimerStartedEvent>(_onStarted);
     on<TimerPreStartedEvent>(_onPreStarted);
@@ -56,6 +76,16 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   Future<void> close() {
     _tickerSubscription?.cancel();
     return super.close();
+  }
+
+  Future<void> _preloadSound() async {
+    await player.setSourceAsset('sounds/beep-07a.mp3');
+  }
+
+  void _vibrate() async{
+    if (await Vibration.hasVibrator()) {
+      Vibration.vibrate();
+    }
   }
 
   
@@ -156,10 +186,16 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 
   void _onTicked(_TimerTickedEvent event, Emitter<TimerState> emit) async{
     _currentRound = event.currentRound;
-    // 🔊 Reproducir sonido
-    if(event.duration <= 3 && event.duration >= 0 ){
-      await player.play(AssetSource('sounds/beep-07a.mp3')); // Asegúrate de tener el archivo en assets
+    // // 🔊 Reproducir sonido
+    if(event.duration <= 3 && event.duration >= 0 && isSound){
+      await player.play(assetSource); // Asegúrate de tener el archivo en assets
     }
+
+     if(event.duration == 0  && isVibration){
+      _vibrate();
+    }
+
+
     if (event.duration > -1){
       emit(TimerRunInProgressState(event.duration, event.rounds, event.restTime, state.currentRounds));
     }
@@ -177,10 +213,16 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   }
 
   void _onTickedRest(_TimerTickedRestEvent event, Emitter<TimerState> emit) async{
-    // 🔊 Reproducir sonido
-    if(event.restTime <= 3 && event.restTime >= 0 ){
-      await player.play(AssetSource('sounds/beep-07a.mp3')); // Asegúrate de tener el archivo en assets
+    // // 🔊 Reproducir sonido
+    if(event.restTime <= 3 && event.restTime >= 0 && isSound){
+      await player.play(assetSource); // Asegúrate de tener el archivo en assets
     }
+
+    if(event.restTime == 0  && isVibration){
+      _vibrate();
+    }
+  
+
     if(event.restTime > -1 ){
       emit(TimerRestInProgressState(event.duration, event.rounds, event.restTime, state.currentRounds));
     }
@@ -195,11 +237,16 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 
   void _onTickedPreStart(_TimerTickedPreStartEvent event, Emitter<TimerState> emit) async{
     print(event.duration);
-    //Reproducir sonido aqui
-    // 🔊 Reproducir sonido
-    if(event.duration <= 3 && event.duration >= 0 ){
-      await player.play(AssetSource('sounds/beep-07a.mp3')); // Asegúrate de tener el archivo en assets
+    // //Reproducir sonido aqui
+    // // 🔊 Reproducir sonido
+    if(event.duration <= 3 && event.duration >= 0  && isSound){
+      await player.play(assetSource); // Asegúrate de tener el archivo en assets
     }
+
+    if(event.duration == 0  && isVibration){
+      _vibrate();
+    }
+  
     
 
     if(event.duration > -1 ){
@@ -210,6 +257,11 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     }
     }  
 
+  void _onFinish(TimerFinishEvent resume, Emitter<TimerState> emit) {
+
+    emit(TimerRunCompleteState());
+    
+  }
 
     
 }
