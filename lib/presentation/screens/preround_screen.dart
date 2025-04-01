@@ -1,96 +1,56 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:training_mma_timer/config/helpers/timer_format.dart';
-
-
 import 'package:training_mma_timer/presentation/cubit/timer_cubit/timer_cubit.dart';
+import 'package:training_mma_timer/presentation/screens/widgets/side_menu.dart';
 
 class PreRoundScreen extends StatelessWidget {
-  static const name = 'PreRound Scree';
+  static const name = 'PreRound Screen';
 
   @override
   Widget build(BuildContext context) {
-    // Guarda el Bloc antes de abrir el diálogo
     final timerBloc = context.read<TimerCubit>();
+    final scaffoldKey = GlobalKey<ScaffoldState>();
     return BlocProvider(
       create: (_) => timerBloc,
       child: Scaffold(
         appBar: AppBar(
           title: Text("Configurar Entrenamiento"),
           actions: [
-            //setting icon
             IconButton(
-              icon: Icon(
-                Icons.settings_outlined,
-                color: Color(0xFFCE090A),
-              ),
-              onPressed: () {
-                context.push('/settings');
-              },
+              icon: Icon(Icons.settings_outlined, color: Theme.of(context).colorScheme.primary),
+              onPressed: () => context.push('/settings'),
             ),
           ],
         ),
+        drawer: SideMenu(scaffoldKey: scaffoldKey,),
         body: BlocBuilder<TimerCubit, TimerCubitState>(
           builder: (context, state) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Center(
-                    child: Text(
-                  'Duracion de entrenamiento ${toMinutesStr(context.read<TimerCubit>().state.duration * context.read<TimerCubit>().state.rounds)}:${toSecondsStr(context.read<TimerCubit>().state.duration * context.read<TimerCubit>().state.rounds)}',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                )),
-                Settings(
-                  icon: Icons.timer_outlined,
-                  text: 'ROUND TIME',
-                  value: state.duration,
-                  isRound: false,
-                ),
-                Container(
-                  height: 1,
-                  width: 300,
-                  color: Color(0xFFCE090A),
-                ),
-                Settings(
-                  icon: Icons.hourglass_bottom_outlined,
-                  text: 'REST TIME',
-                  value: state.restTime,
-                  isRound: false,
-                ),
-                Container(
-                  height: 1,
-                  width: 300,
-                  color: Color(0xFFCE090A),
-                ),
-                Settings(
-                  icon: Icons.sports_mma_outlined,
-                  text: 'ROUNDS',
-                  value: state.rounds,
-                  isRound: true,
-                ),
-                Container(
-                  height: 1,
-                  width: 300,
-                  color: Color(0xFFCE090A),
-                ),
-              ],
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListView(
+                children: [
+                  Text(
+                    'Duración de entrenamiento ${toMinutesStr(state.duration * state.rounds)}:${toSecondsStr(state.duration * state.rounds)}',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  SizedBox(height: 16),
+                  SettingsCard(icon: Icons.timer_outlined, text: 'ROUND TIME', value: state.duration, isRound: false),
+                  SettingsCard(icon: Icons.hourglass_bottom_outlined, text: 'REST TIME', value: state.restTime, isRound: false),
+                  SettingsCard(icon: Icons.sports_mma_outlined, text: 'ROUNDS', value: state.rounds, isRound: true),
+                ],
+              ),
             );
           },
         ),
         floatingActionButton: BlocBuilder<TimerCubit, TimerCubitState>(
           builder: (context, state) {
             return FloatingActionButton(
-              backgroundColor: context.read<TimerCubit>().state.duration == 0
-                  ? Color(0xFFCE090A)
-                  : null,
-              child: context.read<TimerCubit>().state.duration == 0 
-              ? Icon(Icons.cancel_rounded)
-              :Icon(Icons.play_arrow),
+              backgroundColor: state.duration == 0 ? Colors.red : Theme.of(context).colorScheme.primary,
+              child: Icon(state.duration == 0 ? Icons.cancel_rounded : Icons.play_arrow),
               onPressed: () {
-                if(context.read<TimerCubit>().state.duration != 0){
+                if (state.duration != 0) {
                   context.push('/timer');
                 }
               },
@@ -102,109 +62,57 @@ class PreRoundScreen extends StatelessWidget {
   }
 }
 
-class Settings extends StatelessWidget {
-  const Settings({
-    Key? key,
-    required this.icon,
-    required this.text,
-    required this.value,
-    required this.isRound,
-  }) : super(key: key);
+class SettingsCard extends StatelessWidget {
   final int value;
   final IconData icon;
   final String text;
   final bool isRound;
 
+  const SettingsCard({Key? key, required this.icon, required this.text, required this.value, required this.isRound}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              icon,
-              size: 60,
-            ),
+    return Card(
+      elevation: 3,
+      color: Theme.of(context).colorScheme.secondary,
+      // color: const Color(0xFF2A2A2F), // Darker background for the card
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      // shadowColor: const Color(0xFFCE090A), // Red shadow color
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: ListTile(
+          leading: Icon(icon, size: 40, color: Theme.of(context).colorScheme.primary),
+          title: Text(
+            !isRound ? '${toMinutesStr(value)}:${toSecondsStr(value)}' : '$value',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontFamily: 'Sternbach',),
           ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  !isRound
-                      ? '${toMinutesStr(value)}:${toSecondsStr(value)}'
-                      : '$value',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineLarge
-                      ?.copyWith(fontSize: 40),
-                ),
-                Text(
-                  '$text',
-                  style: TextStyle(fontSize: 15, color: Colors.white),
-                ),
-              ],
-            ),
+          subtitle: Text(text, style: Theme.of(context).textTheme.bodyMedium),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(Icons.remove),
+                onPressed: () => _adjustValue(context, decrement: true),
+              ),
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () => _adjustValue(context, decrement: false),
+              ),
+            ],
           ),
-          
-          OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              // shape: RoundedRectangleBorder(
-              //   borderRadius: BorderRadius.circular(10),
-              // ),
-            ),
-            onPressed: () {
-              isRound
-                  ? context.read<TimerCubit>().increaseRounds(1)
-                  : icon == Icons.timer_outlined
-                      ? context.read<TimerCubit>().increaseRoundTime(5)
-                      : context.read<TimerCubit>().increaseRestTime(5);
-            },
-            onLongPress: () {
-              isRound
-                  ? context.read<TimerCubit>().increaseRounds(1)
-                  : icon == Icons.timer_outlined
-                      ? context.read<TimerCubit>().increaseRoundTime(30)
-                      : context.read<TimerCubit>().increaseRestTime(30);
-            },
-            child: const Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(width: 7,),
-          OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              // shape: RoundedRectangleBorder(
-              //   borderRadius: BorderRadius.circular(0),
-              // ),
-            ),
-            
-            onPressed: () {
-              isRound
-                  ? context.read<TimerCubit>().decreaseRounds(1)
-                  : icon == Icons.timer_outlined
-                      ? context.read<TimerCubit>().decreaseRoundTime(5)
-                      : context.read<TimerCubit>().decreaseRestTime(5);
-            },
-            onLongPress: () {
-              isRound
-                  ? context.read<TimerCubit>().decreaseRounds(1)
-                  : icon == Icons.timer_outlined
-                      ? context.read<TimerCubit>().decreaseRoundTime(30)
-                      : context.read<TimerCubit>().decreaseRestTime(30);
-            },
-            child: const Icon(
-              Icons.remove,
-              color: Colors.white,
-            ),
-          ),
-        
-        ],
+        ),
       ),
     );
+  }
+
+  void _adjustValue(BuildContext context, {required bool decrement}) {
+    final timerCubit = context.read<TimerCubit>();
+    if (isRound) {
+      decrement ? timerCubit.decreaseRounds(1) : timerCubit.increaseRounds(1);
+    } else if (icon == Icons.timer_outlined) {
+      decrement ? timerCubit.decreaseRoundTime(5) : timerCubit.increaseRoundTime(5);
+    } else {
+      decrement ? timerCubit.decreaseRestTime(5) : timerCubit.increaseRestTime(5);
+    }
   }
 }

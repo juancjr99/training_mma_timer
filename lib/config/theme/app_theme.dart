@@ -1,36 +1,88 @@
 import 'package:flutter/material.dart';
 
-// Colores UFC
-// Blanco F7F7F7
-// rojo claro D91D28
-// Rojo fuerte CE090A
-
-
-class AppTheme{
-
-  ThemeData getTheme()=>ThemeData(
-    useMaterial3: true,
-    
-    colorScheme: ColorScheme.dark(
-
-      primary:Color(0xFF242529),
-      // primary:Color(0xFF242529), // Rojo claro UFC
-      secondary: Color(0xFFCE090A), // Rojo fuerte UFC
-      onPrimary: Color(0xFFF7F7F7), // Texto sobre `primary`
-      // surface: Color(0xFFF7F7F7), // Fondo de la app
-      surface: Color(0xFF19191E), // Fondo de la app
-    ),
-    // brightness: Brightness.dark,
-    textTheme: const TextTheme(
+class AppTheme {
+  ThemeData getTheme() => ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.dark(
+          primary: Color(0xFFA30808), // Rojo elegante, menos saturado
+          onPrimary: Color(0xFFF7F7F7), // Texto sobre `primary`
+          secondary: Color(0xFF242529), // Fondo de componentes
+          surface: Color(0xFF121217), // Fondo principal oscuro y profundo
+          onSurface: Color(0xFFC4C4C4), // Texto sobre el fondo, gris claro
+          outline: Color(0xFFB99A5E), // Dorado sutil para detalles premium
+        ),
+        textTheme: const TextTheme(
           headlineLarge: TextStyle(
-            fontFamily: 'Sternbach',
-            letterSpacing: 2.0, // Espaciado entre letras
-            fontSize: 32, // Tamaño de fuente
+            fontFamily: 'Sternbach', // Solo para temporizadores
+            letterSpacing: 1.5, 
+            fontSize: 32, 
+            fontWeight: FontWeight.bold,
+            color: Colors.white, 
+          ),
+          headlineMedium: TextStyle(
+            fontFamily: 'Bebas Neue',
+            fontSize: 28,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
-          
-    )
-
-  );
+          headlineSmall: TextStyle(
+            fontFamily: 'Bebas Neue',
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+          bodyLarge: TextStyle(
+            fontFamily: 'Bebas Neue',
+            fontSize: 22,
+            fontWeight: FontWeight.w400,
+            color: Color(0xFFC4C4C4), 
+          ),
+          bodyMedium: TextStyle(
+            fontFamily: 'Bebas Neue', // Fuente principal
+            fontSize: 18,
+            fontWeight: FontWeight.w400,
+            color: Color(0xFFC4C4C4), 
+          ),
+          bodySmall: TextStyle(
+            fontFamily: 'Bebas Neue',
+            fontSize: 16,
+            fontWeight: FontWeight.w300,
+            color: Color(0xFFC4C4C4),
+          ),
+          titleLarge: TextStyle(
+            fontFamily: 'Bebas Neue',
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          titleMedium: TextStyle(
+            fontFamily: 'Bebas Neue',
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFFC4C4C4),
+          ),
+          titleSmall: TextStyle(
+            fontFamily: 'Bebas Neue',
+            fontSize: 18,
+            fontWeight: FontWeight.w400,
+            color: Color(0xFFC4C4C4),
+          ),
+        ),
+        cardColor: Color(0xFF19191E),
+        scaffoldBackgroundColor: Color(0xFF121217),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF19191E),
+          titleTextStyle: TextStyle(
+            fontFamily: 'Bebas Neue', // Fuente de títulos
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
+        buttonTheme: const ButtonThemeData(
+          buttonColor: Color(0xFFA30808),
+          textTheme: ButtonTextTheme.primary,
+        ),
+      );
 }

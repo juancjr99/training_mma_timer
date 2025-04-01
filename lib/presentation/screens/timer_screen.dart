@@ -15,21 +15,21 @@ import 'package:training_mma_timer/presentation/screens/widgets/timer_actions.da
 import 'widgets/widgets.dart';
 
 class TimerScreen extends StatelessWidget {
-  static const name = 'Timer Scree';
+  static const name = 'Timer Screen';
   const TimerScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Obtener el TimerCubit pasado como extra
     final timerCubit = context.read<TimerCubit>();
     final settingsCubit = context.read<SettingsCubit>();
+
     return BlocProvider(
       create: (_) => TimerBloc(
         ticker: Ticker(),
         isSound: settingsCubit.state.isSound,
         isAlert: settingsCubit.state.isAlert,
         isRotation: settingsCubit.state.isRotation,
-        isVibration: settingsCubit.state.isVibration, 
+        isVibration: settingsCubit.state.isVibration,
         duration: timerCubit.state.duration,
         rounds: timerCubit.state.rounds,
         restTime: timerCubit.state.restTime,
@@ -42,51 +42,48 @@ class TimerScreen extends StatelessWidget {
 class TimerView extends StatelessWidget {
   const TimerView({Key? key, required this.timerCubit}) : super(key: key);
   final TimerCubit timerCubit;
+
   @override
   Widget build(BuildContext context) {
+    context.read<TimerBloc>().add(
+          TimerPreStartedEvent(
+            duration: timerCubit.state.duration,
+            rounds: timerCubit.state.rounds,
+            restTime: timerCubit.state.restTime,
+          ),
+        );
 
-    context
-      .read<TimerBloc>()
-      .add(TimerPreStartedEvent(duration: timerCubit.state.duration, rounds: timerCubit.state.rounds, restTime: timerCubit.state.restTime));
     return Scaffold(
       appBar: AppBar(title: const Text('Flutter Timer')),
       body: Stack(
         children: [
-          // const Background(),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 100.0),
-                child: Container(
-                  width: 297,
-                  height: 283,
-                  decoration: const BoxDecoration(
-                    // gradient: LinearGradient(
-                    //   colors: [Color(0xFF171617), Color(0x1A1A1C)],
-                    //   begin: Alignment.topCenter,
-                    //   end: Alignment.bottomCenter,
-                    // ),
-                    color: Color(0xFF242529),
+                padding: const EdgeInsets.symmetric(vertical: 50.0),
+                child: Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Column(
-                    children: [
-                      Container(height: 135, child: Center(child: TimerText())),
-
-                      Container(
-                          height: 87,
-                          // child: Center(child: RoundPoster())),
-                          child: Center(child: RoundCardsContainer())),
-                      // Center(child: Current_Round()),
-                      // Center(child: TimerText()),
-                    ],
+                  color: Theme.of(context).colorScheme.secondary,
+                  surfaceTintColor: Colors.transparent,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 10),
+                        const SizedBox(height: 135, child: Center(child: TimerText())),
+                        const SizedBox(height: 20),
+                        const SizedBox(height: 87, child: Center(child: RoundCardsContainer())),
+                      ],
+                    ),
                   ),
                 ),
               ),
-              TimerActions(
-                timerCubit: timerCubit,
-              ),
+              TimerActions(timerCubit: timerCubit),
             ],
           ),
         ],
@@ -95,48 +92,99 @@ class TimerView extends StatelessWidget {
   }
 }
 
-// class Current_Round extends StatelessWidget {
-//   const Current_Round({super.key});
 
+
+
+// class TimerText extends StatelessWidget {
+//   const TimerText({Key? key}) : super(key: key);
 //   @override
 //   Widget build(BuildContext context) {
-//     final rounds = context.select((TimerBloc bloc) => bloc.state.rounds);
-//     final currentRounds =
-//         context.select((TimerBloc bloc) => bloc.state.currentRounds);
+    
 
 //     return BlocBuilder<TimerBloc, TimerState>(
-//       buildWhen: (prev, state) => prev.runtimeType != state.runtimeType,
+//       buildWhen: (prev, state) => prev.runtimeType != state.runtimeType ,
 //       builder: (context, state) {
-//         return switch (state) {
-//           TimerInitial() => Text("Let's get started!",
-//               style: Theme.of(context).textTheme.headlineLarge),
-//           TimerRunPause() => Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               Text('Paused',
-//                   style: Theme.of(context).textTheme.headlineLarge),
+//         final duration = context.select((TimerBloc bloc) => bloc.state.duration);
+//         final restTime = context.select((TimerBloc bloc) => bloc.state.restTime);
 
-//               Text('$currentRounds/$rounds',
-//                   style: Theme.of(context).textTheme.headlineLarge),
-//             ],
-//           ),
-//           TimerRestPause() => Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               Text('Paused',
-//                   style: Theme.of(context).textTheme.headlineLarge),
+//     // Determinar el tiempo a mostrar
+//         String timeText;
+//         if (state is TimerRestInProgressState || state is TimerRestPauseState) {
+//           timeText = '${toMinutesStr(restTime)}:${toSecondsStr(restTime)}';
+//         } else if (state is TimerRunCompleteState) {
+//           timeText = 'FIN';
+//         } else {
+//           timeText = '${toMinutesStr(duration)}:${toSecondsStr(duration)}';
+//         }
 
-//               Text('Rest Time', style: Theme.of(context).textTheme.headlineLarge),
-//             ],
-//           ),
-//           TimerRunInProgress() => Text('$currentRounds/$rounds',
-//               style: Theme.of(context).textTheme.headlineLarge),
-//           TimerRestInProgress() =>
-//             Text('Rest Time', style: Theme.of(context).textTheme.headlineLarge),
-//           TimerRunComplete() => Text('You made it!!!',
-//               style: Theme.of(context).textTheme.headlineLarge),
-//           _ => const SizedBox.shrink(),
-//         };
+//         return FadeInDown(
+//           duration: Duration(milliseconds: 500),
+//           child: switch (state) {
+//             TimerInitialState() => Text(
+//                 '${toMinutesStr(duration)}:${toSecondsStr(duration)}',
+//                 style: Theme.of(context)
+//                     .textTheme
+//                     .headlineLarge
+//                     ?.copyWith(fontSize: 95)),
+//             TimerRunInProgressState() => Text(
+//                 '${toMinutesStr(duration)}:${toSecondsStr(duration)}',
+//                 style: Theme.of(context)
+//                     .textTheme
+//                     .headlineLarge
+//                     ?.copyWith(fontSize: 95)),
+//             TimerRestInProgressState() => Text(
+//                 '${toMinutesStr(restTime)}:${toSecondsStr(restTime)}',
+//                 style: Theme.of(context)
+//                     .textTheme
+//                     .headlineLarge
+//                     ?.copyWith(fontSize: 95),
+//               ),
+//             TimerRunCompleteState() => Text(
+//                 'FIN',
+//                 style: Theme.of(context)
+//                     .textTheme
+//                     .headlineLarge
+//                     ?.copyWith(fontSize: 95),
+//               ),
+//             TimerRunPauseState() => Text(
+//                 '${toMinutesStr(duration)}:${toSecondsStr(duration)}',
+//                 style: Theme.of(context)
+//                     .textTheme
+//                     .headlineLarge
+//                     ?.copyWith(fontSize: 95),
+//               ),
+//             TimerRestPauseState() => Text(
+//                 '${toMinutesStr(restTime)}:${toSecondsStr(restTime)}',
+//                 style: Theme.of(context)
+//                     .textTheme
+//                     .headlineLarge
+//                     ?.copyWith(fontSize: 95),
+//               ),
+//               TimerPreStartInProgressState() => Text(
+//                 '${toMinutesStr(duration)}:${toSecondsStr(duration)}',
+//                 style: Theme.of(context)
+//                     .textTheme
+//                     .headlineLarge
+//                     ?.copyWith(fontSize: 95),
+//               ),
+//               TimerPreStartPauseState() => Text(
+//                 '${toMinutesStr(duration)}:${toSecondsStr(duration)}',
+//                 style: Theme.of(context)
+//                     .textTheme
+//                     .headlineLarge
+//                     ?.copyWith(fontSize: 95),
+//               ),
+
+//               TimerStartState()=>Text(
+//                 '${toMinutesStr(duration)}:${toSecondsStr(duration)}',
+//                 style: Theme.of(context)
+//                     .textTheme
+//                     .headlineLarge
+//                     ?.copyWith(fontSize: 95),
+//               ),
+//             _ => const SizedBox.shrink(),
+//           },
+//         );
 //       },
 //     );
 //   }
@@ -144,81 +192,32 @@ class TimerView extends StatelessWidget {
 
 class TimerText extends StatelessWidget {
   const TimerText({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final duration = context.select((TimerBloc bloc) => bloc.state.duration);
     final restTime = context.select((TimerBloc bloc) => bloc.state.restTime);
-
     return BlocBuilder<TimerBloc, TimerState>(
-      buildWhen: (prev, state) => prev.runtimeType != state.runtimeType ,
+      buildWhen: (prev, state) => prev.runtimeType != state.runtimeType,
       builder: (context, state) {
-        return FadeInDown(
-          duration: Duration(milliseconds: 500),
-          child: switch (state) {
-            TimerInitialState() => Text(
-                '${toMinutesStr(duration)}:${toSecondsStr(duration)}',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineLarge
-                    ?.copyWith(fontSize: 95)),
-            TimerRunInProgressState() => Text(
-                '${toMinutesStr(duration)}:${toSecondsStr(duration)}',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineLarge
-                    ?.copyWith(fontSize: 95)),
-            TimerRestInProgressState() => Text(
-                '${toMinutesStr(restTime)}:${toSecondsStr(restTime)}',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineLarge
-                    ?.copyWith(fontSize: 95),
-              ),
-            TimerRunCompleteState() => Text(
-                'FIN',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineLarge
-                    ?.copyWith(fontSize: 95),
-              ),
-            TimerRunPauseState() => Text(
-                '${toMinutesStr(duration)}:${toSecondsStr(duration)}',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineLarge
-                    ?.copyWith(fontSize: 95),
-              ),
-            TimerRestPauseState() => Text(
-                '${toMinutesStr(restTime)}:${toSecondsStr(restTime)}',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineLarge
-                    ?.copyWith(fontSize: 95),
-              ),
-              TimerPreStartInProgressState() => Text(
-                '${toMinutesStr(duration)}:${toSecondsStr(duration)}',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineLarge
-                    ?.copyWith(fontSize: 95),
-              ),
-              TimerPreStartPauseState() => Text(
-                '${toMinutesStr(duration)}:${toSecondsStr(duration)}',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineLarge
-                    ?.copyWith(fontSize: 95),
-              ),
 
-              TimerStartState()=>Text(
-                '${toMinutesStr(duration)}:${toSecondsStr(duration)}',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineLarge
-                    ?.copyWith(fontSize: 95),
-              ),
-            _ => const SizedBox.shrink(),
-          },
+
+        String getFormattedTime() {
+          if (state is TimerRestInProgressState || state is TimerRestPauseState) {
+            return '${toMinutesStr(restTime)}:${toSecondsStr(restTime)}';
+          }
+          if (state is TimerRunCompleteState) {
+            return 'FIN';
+          }
+          return '${toMinutesStr(duration)}:${toSecondsStr(duration)}';
+        }
+
+        return FadeInDown(
+          duration: const Duration(milliseconds: 500),
+          child: Text(
+            getFormattedTime(),
+            style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontSize: 95),
+          ),
         );
       },
     );

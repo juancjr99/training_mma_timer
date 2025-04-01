@@ -21,8 +21,6 @@ class SettingsScreen extends StatelessWidget {
   }
 }
 
-enum Transportation { car, plane, boat, submarine }
-
 class _UiControlsView extends StatelessWidget {
   const _UiControlsView({super.key});
 
@@ -31,144 +29,99 @@ class _UiControlsView extends StatelessWidget {
     final settings = context.read<SettingsCubit>();
     return ListView(
       physics: const ClampingScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(5, 5 , 5, 7),
       children: [
-
-        SwitchListTile(
+        _buildSettingCard(
+          context,
+          title: 'Sound',
+          subtitle: 'Additional controls',
           value: settings.state.isSound,
           onChanged: (value) {
             settings.sound();
           },
-          activeTrackColor: Color(0xFFCE090A),
-          title: const Text('Sound'),
-          subtitle: const Text('Controles adicionales'),
         ),
-
-
-        Container(
-          height: 1,
-          color: Color(0xFFCE090A),
-        ),
-        SwitchListTile(
+        //_buildSmallDivider(),
+        _buildSettingCard(
+          context,
+          title: 'Vibration',
+          subtitle: 'Additional controls',
           value: settings.state.isVibration,
           onChanged: (value) {
             settings.vibration();
           },
-          activeTrackColor: Color(0xFFCE090A),
-          title: const Text('Vibration'),
-          subtitle: const Text('Controles adicionales'),
         ),
-        Container(
-          height: 1,
-          color: Color(0xFFCE090A),
-        ),
-
-        SwitchListTile(
+        //_buildSmallDivider(),
+        _buildSettingCard(
+          context,
+          title: 'Allow Rotation',
+          subtitle: 'Additional controls',
           value: settings.state.isRotation,
           onChanged: (value) {
             settings.rotation();
           },
-          activeTrackColor: Color(0xFFCE090A),
-          title: const Text('Permitir la Rotacion'),
-          subtitle: const Text('Controles adicionales'),
         ),
-        Container(
-          height: 1,
-          color: Color(0xFFCE090A),
-        ),
-
-        SwitchListTile(
+        //_buildSmallDivider(),
+        _buildSettingCard(
+          context,
+          title: 'Alerts before round ends',
+          subtitle: 'Additional controls',
           value: settings.state.isAlert,
           onChanged: (value) {
             settings.alert();
           },
-          activeTrackColor: Color(0xFFCE090A),
-          title: const Text('Alertas antes del final de la ronda'),
-          subtitle: const Text('Controles adicionales'),
         ),
+        
       ],
     );
   }
-}
 
-class _UiControlsView1 extends StatefulWidget {
-  const _UiControlsView1({
-    super.key,
-  });
+  Widget _buildSettingCard(
+    BuildContext context, {
+    required String title,
+    required String subtitle,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 6),
+      color: const Color(0xFF2A2A2F), // Darker background for the card
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16), // Increased border radius
+      ),
+      elevation: 5, // Subtle shadow
+      child: ListTile(
+        contentPadding: const EdgeInsets.fromLTRB(10, 5 , 10, 7),
+        title: Text(
+          title,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(color: Color(0xFFB0B0B0)),
+        ),
+        trailing: Switch(
+          value: value,
+          onChanged: onChanged,
+          activeTrackColor: const Color(0xFFCE090A),
+          activeColor: Colors.white,
+          //  inactiveTrackColor: Color(0xFFC4C4C4), // Color for the track when inactive
+              inactiveThumbColor: Color(0xFFC4C4C4), // Thumb color when inactive
 
-  @override
-  State<_UiControlsView1> createState() => _UiControlsView1State();
-}
+        ),
+      ),
+    );
+  }
 
-class _UiControlsView1State extends State<_UiControlsView1> {
-  bool isSound = true;
-  bool isVibration = true;
-  bool isRotation = false;
-  bool isAlert = true;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      physics: const ClampingScrollPhysics(),
-      children: [
-        SwitchListTile(
-          value: isSound,
-          onChanged: (value) {
-            setState(
-              () {
-                isSound = !isSound;
-              },
-            );
-          },
-          activeTrackColor: Color(0xFFCE090A),
-          title: const Text('Sound'),
-          subtitle: const Text('Controles adicionales'),
-        ),
-        Container(
-          height: 1,
-          color: Color(0xFFCE090A),
-        ),
-        SwitchListTile(
-          value: isVibration,
-          onChanged: (value) {
-            setState(() {
-              isVibration = !isVibration;
-            });
-          },
-          activeTrackColor: Color(0xFFCE090A),
-          title: const Text('Vibration'),
-          subtitle: const Text('Controles adicionales'),
-        ),
-        Container(
-          height: 1,
-          color: Color(0xFFCE090A),
-        ),
-        SwitchListTile(
-          value: isRotation,
-          onChanged: (value) {
-            setState(() {
-              isRotation = !isRotation;
-            });
-          },
-          activeTrackColor: Color(0xFFCE090A),
-          title: const Text('Permitir la Rotacion'),
-          subtitle: const Text('Controles adicionales'),
-        ),
-        Container(
-          height: 1,
-          color: Color(0xFFCE090A),
-        ),
-        SwitchListTile(
-          value: isAlert,
-          onChanged: (value) {
-            setState(() {
-              isAlert = !isAlert;
-            });
-          },
-          activeTrackColor: Color(0xFFCE090A),
-          title: const Text('Alertas antes del final de la ronda'),
-          subtitle: const Text('Controles adicionales'),
-        ),
-      ],
+  Widget _buildSmallDivider() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 8),
+      child: Divider(
+        height: 1,
+        color: Color(0xFFCE090A),
+        thickness: 1, // A thinner divider
+        indent: 40, // Indent to make it shorter
+        endIndent: 40, // Indent to make it shorter
+      ),
     );
   }
 }
