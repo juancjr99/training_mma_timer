@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:training_mma_timer/config/helpers/timer_format.dart';
+import 'package:training_mma_timer/notification/foreground_service.dart';
 import 'package:training_mma_timer/presentation/cubit/timer_cubit/timer_cubit.dart';
 import 'package:training_mma_timer/presentation/screens/widgets/side_menu.dart';
 
@@ -24,7 +25,7 @@ class PreRoundScreen extends StatelessWidget {
             ),
           ],
         ),
-        drawer: SideMenu(scaffoldKey: scaffoldKey,),
+        // drawer: SideMenu(scaffoldKey: scaffoldKey,),
         body: BlocBuilder<TimerCubit, TimerCubitState>(
           builder: (context, state) {
             return Padding(
@@ -50,9 +51,11 @@ class PreRoundScreen extends StatelessWidget {
               backgroundColor: state.duration == 0 ? Colors.red : Theme.of(context).colorScheme.primary,
               child: Icon(state.duration == 0 ? Icons.cancel_rounded : Icons.play_arrow),
               onPressed: () {
-                if (state.duration != 0) {
-                  context.push('/timer');
-                }
+                // if (state.duration != 0) {
+                //   context.push('/timer');
+                // }
+                print('Hacer algo');
+                
               },
             );
           },

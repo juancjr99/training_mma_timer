@@ -9,7 +9,7 @@ class AppTheme {
           secondary: Color(0xFF242529), // Fondo de componentes
           surface: Color(0xFF121217), // Fondo principal oscuro y profundo
           onSurface: Color(0xFFC4C4C4), // Texto sobre el fondo, gris claro
-          outline: Color(0xFFB99A5E), // Dorado sutil para detalles premium
+          outline: Color(0xFF79747E), 
         ),
         textTheme: const TextTheme(
           headlineLarge: TextStyle(

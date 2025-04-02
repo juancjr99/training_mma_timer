@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:training_mma_timer/config/router/app_router.dart';
 import 'package:training_mma_timer/config/theme/app_theme.dart';
 
@@ -7,6 +8,9 @@ import 'package:training_mma_timer/presentation/cubit/settings_cubit/settings_cu
 import 'package:training_mma_timer/presentation/cubit/timer_cubit/timer_cubit.dart';
 
 void main() {
+  // Initialize port for communication between TaskHandler and UI.
+  FlutterForegroundTask.initCommunicationPort();
+  
   runApp(MultiBlocProvider(
     providers: [
         BlocProvider<TimerCubit>(create: (_) => TimerCubit()),

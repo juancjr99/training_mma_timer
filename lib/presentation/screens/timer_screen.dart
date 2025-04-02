@@ -275,6 +275,292 @@ class RoundCardsContainer extends StatelessWidget {
   }
 }
 
+// class RoundCards extends StatelessWidget {
+//   const RoundCards({
+//     super.key,
+//     required this.currentRound,
+//     required this.rounds,
+//   });
+
+//   final int currentRound;
+//   final int rounds;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Row(
+//         key: ValueKey(currentRound),
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: List.generate(rounds, (index) {
+//           final isCurrent = index + 1 == currentRound; // Si es el round actual
+
+//           final ValueNotifier<bool> startSizeAnimation = ValueNotifier(false);
+
+//           // Retrasamos solo el cambio de tamaño (sin afectar la animación de caída)
+//           Future.delayed(const Duration(milliseconds: 600), () {
+//             startSizeAnimation.value = true;
+//           });
+
+//           return FadeInDown(
+//               duration:
+//                   Duration(milliseconds: 500 + (index * 100)), // Escalonado
+
+//               child: ValueListenableBuilder<bool>(
+//                   valueListenable: startSizeAnimation,
+//                   builder: (context, shouldAnimate, child) {
+//                     return TweenAnimationBuilder<double>(
+//                         tween: Tween<double>(
+//                             begin: 18,
+//                             end: shouldAnimate
+//                                 ? (isCurrent ? 54 : 18)
+//                                 : 18), // Agranda solo después del delay
+//                         duration: const Duration(
+//                           milliseconds: 200,
+//                         ),
+//                         builder: (context, size, child) {
+//                           return Container(
+//                             width: size,
+//                             height: 41,
+//                             margin: const EdgeInsets.symmetric(horizontal: 6.5),
+//                             decoration: BoxDecoration(
+//                                 color: isCurrent
+//                                     ? Color(0xFFD2AF4A)
+//                                     : Color(0xFF63625E), // Destacado o gris
+
+//                                 gradient: isCurrent
+//                                     ? const LinearGradient(
+//                                         colors: [
+//                                           Color(0xFFD2AF4A),
+//                                           Color(0xFFD3AD4B)
+//                                         ],
+//                                         begin: Alignment.centerLeft,
+//                                         end: Alignment.centerRight,
+//                                       )
+//                                     : null // Sin gradiente si no es el actual
+//                                 ),
+//                             child: FutureBuilder(
+//                                 future: Future.delayed(Duration(
+//                                     milliseconds:
+//                                         100)), // Espera 1 segundo antes de mostrar el texto
+//                                 builder: (context, snapshot) {
+//                                   if (snapshot.connectionState ==
+//                                       ConnectionState.done) {
+//                                     return TweenAnimationBuilder<double>(
+//                                         tween:
+//                                             Tween<double>(begin: 0.0, end: 1.0),
+//                                         duration: Duration(
+//                                             milliseconds:
+//                                                 100), // Desvanecimiento suave
+//                                         builder: (context, opacity, child) {
+//                                           return AnimatedOpacity(
+//                                               opacity: shouldAnimate &&
+//                                                       isCurrent
+//                                                   ? opacity
+//                                                   : 0.0, // Aparece solo cuando está animado
+//                                               duration: const Duration(
+//                                                   milliseconds:
+//                                                       50), // Suaviza la aparición del texto
+//                                               child: isCurrent
+//                                                   ? Center(
+//                                                       child: Text(
+//                                                         'R$currentRound',
+//                                                         style: Theme.of(context)
+//                                                             .textTheme
+//                                                             .headlineSmall
+//                                                             ?.copyWith(
+//                                                               fontSize: 20,
+//                                                               color:
+//                                                                   Colors.black,
+//                                                             ),
+//                                                       ),
+//                                                     )
+//                                                   : null); // Solo el actual tiene texto
+//                                         });
+//                                   } else {
+//                                     return SizedBox
+//                                         .shrink(); // Mientras espera, no muestra nada
+//                                   }
+//                                 }), // Solo el actual tiene texto
+//                           );
+//                         });
+//                   }));
+//         }));
+//   }
+// }
+
+// class RestCard extends StatelessWidget {
+//   const RestCard({
+//     Key? key,
+//     required this.currentRound,
+//     required this.rounds,
+//     required this.text,
+//   }) : super(key: key);
+
+//   final int currentRound;
+//   final int rounds;
+//   final String text;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Row(
+//         key: ValueKey(currentRound),
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           FadeInDown(
+//               duration: Duration(milliseconds: 500), // Escalonado
+
+//               child: Column(
+//                 children: [
+//                   Container(
+//                     key: ValueKey(currentRound),
+//                     width: 54,
+//                     height: 41,
+//                     margin: const EdgeInsets.symmetric(horizontal: 6.5),
+//                     decoration: BoxDecoration(
+//                         gradient: const LinearGradient(
+//                       colors: [Color(0xFFD2AF4A), Color(0xFFD3AD4B)],
+//                       begin: Alignment.centerLeft,
+//                       end: Alignment.centerRight,
+//                     )),
+//                     child: Center(
+//                       child: Text(
+//                         'R$currentRound',
+//                         style: Theme.of(context)
+//                             .textTheme
+//                             .headlineSmall
+//                             ?.copyWith(fontSize: 20, color: Colors.black),
+//                       ),
+//                     ),
+//                   ),
+//                   SizedBox(
+//                     height: 5,
+//                   ),
+//                   Container(
+//                     key: ValueKey(text),
+//                     width: 200,
+//                     height: 41,
+//                     margin: const EdgeInsets.symmetric(horizontal: 6.5),
+//                     decoration: BoxDecoration(
+//                         gradient: const LinearGradient(
+//                       colors: [Color(0xFFD2AF4A), Color(0xFFD3AD4B)],
+//                       begin: Alignment.centerLeft,
+//                       end: Alignment.centerRight,
+//                     )),
+//                     child: Center(
+//                       child: Text(
+//                         '$text',
+//                         style: Theme.of(context)
+//                             .textTheme
+//                             .headlineSmall
+//                             ?.copyWith(fontSize: 20, color: Colors.black),
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               ))
+//         ]);
+//   }
+// }
+
+
+// class Poster extends StatelessWidget {
+//   const Poster({
+//     super.key,
+//     required this.text, required this.timeDelay,
+//   });
+//   final int timeDelay;
+//   final String text;
+
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final ValueNotifier<bool> startSizeAnimation = ValueNotifier(false);
+
+//           // Retrasamos solo el cambio de tamaño (sin afectar la animación de caída)
+//           Future.delayed( Duration(milliseconds: timeDelay), () {
+//             startSizeAnimation.value = true;
+//           });
+
+//     return  FadeInDown(
+
+//               duration:
+//                   Duration(milliseconds: 500 ), // Escalonado
+
+//               child: ValueListenableBuilder<bool>(
+//                   valueListenable: startSizeAnimation,
+//                   builder: (context, shouldAnimate, child) {
+//                     return TweenAnimationBuilder<double>(
+//                         tween: Tween<double>(
+//                             begin: 18,
+//                             end: shouldAnimate
+//                                 ? 250
+//                                 : 18), // Agranda solo después del delay
+//                         duration: const Duration(
+//                           milliseconds: 200,
+//                         ),
+//                         builder: (context, size, child) {
+//                           return Container(
+//                             width: size,
+//                             height: 41,
+//                             margin: const EdgeInsets.symmetric(horizontal: 6.5),
+//                             decoration: BoxDecoration(
+
+//                                 gradient: const LinearGradient(
+//                                         colors: [
+//                                           Color(0xFFD2AF4A),
+//                                           Color(0xFFD3AD4B)
+//                                         ],
+//                                         begin: Alignment.centerLeft,
+//                                         end: Alignment.centerRight,
+//                                       )
+
+//                                 ),
+//                             child: FutureBuilder(
+//                                 future: Future.delayed(Duration(
+//                                     milliseconds:
+//                                       100)), // Espera 1 segundo antes de mostrar el texto
+//                                 builder: (context, snapshot) {
+//                                   if (snapshot.connectionState ==
+//                                       ConnectionState.done) {
+//                                     return TweenAnimationBuilder<double>(
+//                                         tween:
+//                                             Tween<double>(begin: 0.0, end: 1.0),
+//                                         duration: Duration(
+//                                             milliseconds:
+//                                                 100), // Desvanecimiento suave
+//                                         builder: (context, opacity, child) {
+//                                           return AnimatedOpacity(
+//                                               opacity: shouldAnimate 
+//                                                   ? opacity
+//                                                   : 0.0, // Aparece solo cuando está animado
+//                                               duration: const Duration(
+//                                                   milliseconds:
+//                                                       50), // Suaviza la aparición del texto
+//                                               child: Center(
+//                                                       child: Text(
+//                                                         '$text',
+//                                                         style: Theme.of(context)
+//                                                             .textTheme
+//                                                             .headlineSmall
+//                                                             ?.copyWith(
+//                                                               fontSize: 20,
+//                                                               color:
+//                                                                   Colors.black,
+//                                                             ),
+//                                                       ),
+//                                                     )
+
+//                             );});
+//                                   } else {
+//                                     return SizedBox
+//                                         .shrink(); // Mientras espera, no muestra nada
+//                                   }
+//                                 }), // Solo el actual tiene texto
+//                           );
+//                         });
+//                   }));
+
+//   }
+// }
 class RoundCards extends StatelessWidget {
   const RoundCards({
     super.key,
@@ -288,104 +574,101 @@ class RoundCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-        key: ValueKey(currentRound),
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(rounds, (index) {
-          final isCurrent = index + 1 == currentRound; // Si es el round actual
+      key: ValueKey(currentRound),
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(rounds, (index) {
+        final isCurrent = index + 1 == currentRound; // Si es el round actual
 
-          final ValueNotifier<bool> startSizeAnimation = ValueNotifier(false);
+        final ValueNotifier<bool> startSizeAnimation = ValueNotifier(false);
 
-          // Retrasamos solo el cambio de tamaño (sin afectar la animación de caída)
-          Future.delayed(const Duration(milliseconds: 600), () {
-            startSizeAnimation.value = true;
-          });
+        // Retrasamos solo el cambio de tamaño (sin afectar la animación de caída)
+        Future.delayed(const Duration(milliseconds: 600), () {
+          startSizeAnimation.value = true;
+        });
 
-          return FadeInDown(
-              duration:
-                  Duration(milliseconds: 500 + (index * 100)), // Escalonado
-
-              child: ValueListenableBuilder<bool>(
-                  valueListenable: startSizeAnimation,
-                  builder: (context, shouldAnimate, child) {
-                    return TweenAnimationBuilder<double>(
-                        tween: Tween<double>(
-                            begin: 18,
-                            end: shouldAnimate
-                                ? (isCurrent ? 54 : 18)
-                                : 18), // Agranda solo después del delay
-                        duration: const Duration(
-                          milliseconds: 200,
-                        ),
-                        builder: (context, size, child) {
-                          return Container(
-                            width: size,
-                            height: 41,
-                            margin: const EdgeInsets.symmetric(horizontal: 6.5),
-                            decoration: BoxDecoration(
-                                color: isCurrent
-                                    ? Color(0xFFD2AF4A)
-                                    : Color(0xFF63625E), // Destacado o gris
-
-                                gradient: isCurrent
-                                    ? const LinearGradient(
-                                        colors: [
-                                          Color(0xFFD2AF4A),
-                                          Color(0xFFD3AD4B)
-                                        ],
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
+        return FadeInDown(
+          duration: Duration(milliseconds: 500 + (index * 100)), // Escalonado
+          child: ValueListenableBuilder<bool>(
+            valueListenable: startSizeAnimation,
+            builder: (context, shouldAnimate, child) {
+              return TweenAnimationBuilder<double>(
+                tween: Tween<double>(
+                  begin: 18,
+                  end: shouldAnimate
+                      ? (isCurrent ? 54 : 18)
+                      : 18, // Agranda solo después del delay
+                ),
+                duration: const Duration(
+                  milliseconds: 200,
+                ),
+                builder: (context, size, child) {
+                  return Container(
+                    width: size,
+                    height: 41,
+                    margin: const EdgeInsets.symmetric(horizontal: 6.5),
+                    decoration: BoxDecoration(
+                      color: isCurrent
+                          ? Color(0xFFD2AF4A)
+                          : Color(0xFF63625E), // Destacado o gris
+                      gradient: isCurrent
+                          ? const LinearGradient(
+                              colors: [
+                                Color(0xFFD2AF4A),
+                                Color(0xFFD3AD4B)
+                              ],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            )
+                          : null, // Sin gradiente si no es el actual
+                      borderRadius: BorderRadius.circular(10), // Bordes redondeados
+                    ),
+                    child: FutureBuilder(
+                      future: Future.delayed(Duration(
+                          milliseconds: 100)), // Espera 100ms antes de mostrar el texto
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return TweenAnimationBuilder<double>(
+                            tween: Tween<double>(begin: 0.0, end: 1.0),
+                            duration: Duration(milliseconds: 100), // Desvanecimiento suave
+                            builder: (context, opacity, child) {
+                              return AnimatedOpacity(
+                                opacity: shouldAnimate && isCurrent
+                                    ? opacity
+                                    : 0.0, // Aparece solo cuando está animado
+                                duration: const Duration(milliseconds: 50), // Suaviza la aparición del texto
+                                child: isCurrent
+                                    ? Center(
+                                        child: Text(
+                                          'R$currentRound',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall
+                                              ?.copyWith(
+                                                fontSize: 20,
+                                                color: Colors.black,
+                                              ),
+                                        ),
                                       )
-                                    : null // Sin gradiente si no es el actual
-                                ),
-                            child: FutureBuilder(
-                                future: Future.delayed(Duration(
-                                    milliseconds:
-                                        100)), // Espera 1 segundo antes de mostrar el texto
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.done) {
-                                    return TweenAnimationBuilder<double>(
-                                        tween:
-                                            Tween<double>(begin: 0.0, end: 1.0),
-                                        duration: Duration(
-                                            milliseconds:
-                                                100), // Desvanecimiento suave
-                                        builder: (context, opacity, child) {
-                                          return AnimatedOpacity(
-                                              opacity: shouldAnimate &&
-                                                      isCurrent
-                                                  ? opacity
-                                                  : 0.0, // Aparece solo cuando está animado
-                                              duration: const Duration(
-                                                  milliseconds:
-                                                      50), // Suaviza la aparición del texto
-                                              child: isCurrent
-                                                  ? Center(
-                                                      child: Text(
-                                                        'R$currentRound',
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headlineSmall
-                                                            ?.copyWith(
-                                                              fontSize: 20,
-                                                              color:
-                                                                  Colors.black,
-                                                            ),
-                                                      ),
-                                                    )
-                                                  : null); // Solo el actual tiene texto
-                                        });
-                                  } else {
-                                    return SizedBox
-                                        .shrink(); // Mientras espera, no muestra nada
-                                  }
-                                }), // Solo el actual tiene texto
-                          );
-                        });
-                  }));
-        }));
+                                    : null, // Solo el actual tiene texto
+                              );
+                            });
+                        } else {
+                          return SizedBox.shrink(); // Mientras espera, no muestra nada
+                        }
+                      },
+                    ), // Solo el actual tiene texto
+                  );
+                },
+              );
+            },
+          ),
+        );
+      }),
+    );
   }
 }
+
+
 
 class RestCard extends StatelessWidget {
   const RestCard({
@@ -402,163 +685,114 @@ class RestCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-        key: ValueKey(currentRound),
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          FadeInDown(
-              duration: Duration(milliseconds: 500), // Escalonado
-
-              child: Column(
-                children: [
-                  Container(
-                    key: ValueKey(currentRound),
-                    width: 54,
-                    height: 41,
-                    margin: const EdgeInsets.symmetric(horizontal: 6.5),
-                    decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                      colors: [Color(0xFFD2AF4A), Color(0xFFD3AD4B)],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    )),
-                    child: Center(
-                      child: Text(
-                        'R$currentRound',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall
-                            ?.copyWith(fontSize: 20, color: Colors.black),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(
-                    key: ValueKey(text),
-                    width: 200,
-                    height: 41,
-                    margin: const EdgeInsets.symmetric(horizontal: 6.5),
-                    decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                      colors: [Color(0xFFD2AF4A), Color(0xFFD3AD4B)],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    )),
-                    child: Center(
-                      child: Text(
-                        '$text',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall
-                            ?.copyWith(fontSize: 20, color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ],
-              ))
-        ]);
+      key: ValueKey(currentRound),
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          width: 54,
+          height: 41,
+          margin: const EdgeInsets.symmetric(horizontal: 6.5),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFFD2AF4A), Color(0xFFD3AD4B)],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Center(
+            child: Text(
+              'R$currentRound',
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall
+                  ?.copyWith(fontSize: 20, color: Colors.black),
+            ),
+          ),
+        ),
+        const SizedBox(height: 5),
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          width: 200,
+          height: 41,
+          margin: const EdgeInsets.symmetric(horizontal: 6.5),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFFD2AF4A), Color(0xFFD3AD4B)],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Center(
+            child: Text(
+              text,
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall
+                  ?.copyWith(fontSize: 20, color: Colors.black),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
-
 
 class Poster extends StatelessWidget {
   const Poster({
     super.key,
-    required this.text, required this.timeDelay,
+    required this.text,
+    required this.timeDelay,
   });
   final int timeDelay;
   final String text;
-
 
   @override
   Widget build(BuildContext context) {
     final ValueNotifier<bool> startSizeAnimation = ValueNotifier(false);
 
-          // Retrasamos solo el cambio de tamaño (sin afectar la animación de caída)
-          Future.delayed( Duration(milliseconds: timeDelay), () {
-            startSizeAnimation.value = true;
-          });
+    // Retrasamos solo el cambio de tamaño (sin afectar la animación de caída)
+    Future.delayed(Duration(milliseconds: timeDelay), () {
+      startSizeAnimation.value = true;
+    });
 
-    return  FadeInDown(
-
-              duration:
-                  Duration(milliseconds: 500 ), // Escalonado
-
-              child: ValueListenableBuilder<bool>(
-                  valueListenable: startSizeAnimation,
-                  builder: (context, shouldAnimate, child) {
-                    return TweenAnimationBuilder<double>(
-                        tween: Tween<double>(
-                            begin: 18,
-                            end: shouldAnimate
-                                ? 250
-                                : 18), // Agranda solo después del delay
-                        duration: const Duration(
-                          milliseconds: 200,
-                        ),
-                        builder: (context, size, child) {
-                          return Container(
-                            width: size,
-                            height: 41,
-                            margin: const EdgeInsets.symmetric(horizontal: 6.5),
-                            decoration: BoxDecoration(
-
-                                gradient: const LinearGradient(
-                                        colors: [
-                                          Color(0xFFD2AF4A),
-                                          Color(0xFFD3AD4B)
-                                        ],
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                      )
-
-                                ),
-                            child: FutureBuilder(
-                                future: Future.delayed(Duration(
-                                    milliseconds:
-                                      100)), // Espera 1 segundo antes de mostrar el texto
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.done) {
-                                    return TweenAnimationBuilder<double>(
-                                        tween:
-                                            Tween<double>(begin: 0.0, end: 1.0),
-                                        duration: Duration(
-                                            milliseconds:
-                                                100), // Desvanecimiento suave
-                                        builder: (context, opacity, child) {
-                                          return AnimatedOpacity(
-                                              opacity: shouldAnimate 
-                                                  ? opacity
-                                                  : 0.0, // Aparece solo cuando está animado
-                                              duration: const Duration(
-                                                  milliseconds:
-                                                      50), // Suaviza la aparición del texto
-                                              child: Center(
-                                                      child: Text(
-                                                        '$text',
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headlineSmall
-                                                            ?.copyWith(
-                                                              fontSize: 20,
-                                                              color:
-                                                                  Colors.black,
-                                                            ),
-                                                      ),
-                                                    )
-
-                            );});
-                                  } else {
-                                    return SizedBox
-                                        .shrink(); // Mientras espera, no muestra nada
-                                  }
-                                }), // Solo el actual tiene texto
-                          );
-                        });
-                  }));
-
+    return FadeInDown(
+      duration: const Duration(milliseconds: 500),
+      child: ValueListenableBuilder<bool>(
+        valueListenable: startSizeAnimation,
+        builder: (context, shouldAnimate, child) {
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            width: shouldAnimate ? 250 : 18,
+            height: 41,
+            margin: const EdgeInsets.symmetric(horizontal: 6.5),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFFD2AF4A), Color(0xFFD3AD4B)],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(
+              child: AnimatedOpacity(
+                opacity: shouldAnimate ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 300),
+                child: Text(
+                  text,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineSmall
+                      ?.copyWith(fontSize: 20, color: Colors.black),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 

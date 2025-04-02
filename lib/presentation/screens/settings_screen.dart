@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:training_mma_timer/presentation/cubit/settings_cubit/settings_cubit.dart';
+import 'package:vibration/vibration.dart';  // Importar el paquete de vibración
 
 class SettingsScreen extends StatelessWidget {
   static const name = 'Settings_screen';
@@ -24,104 +25,102 @@ class SettingsScreen extends StatelessWidget {
 class _UiControlsView extends StatelessWidget {
   const _UiControlsView({super.key});
 
+  static const WidgetStateProperty<Icon> thumbIcon = WidgetStateProperty<Icon>.fromMap(
+    <WidgetStatesConstraint, Icon>{
+      WidgetState.selected: Icon(Icons.check,color: Color(0xFFA30808),),
+      WidgetState.any: Icon(Icons.close),
+    },
+  );
+
+
   @override
   Widget build(BuildContext context) {
     final settings = context.read<SettingsCubit>();
+    final List<Map<String, dynamic>> settingsOptions = [
+      {
+        'title': 'Sound',
+        'value': settings.state.isSound,
+        'onChanged': settings.sound,
+      },
+      {
+        'title': 'Vibration',
+        'value': settings.state.isVibration,
+        'onChanged': settings.vibration,
+      },
+      {
+        'title': 'Rotation',
+        'value': settings.state.isRotation,
+        'onChanged': settings.rotation,
+      },
+      {
+        'title': 'Alerts before round ends',
+        'value': settings.state.isAlert,
+        'onChanged': settings.alert,
+      },
+    ];
+    
     return ListView(
       physics: const ClampingScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(5, 5 , 5, 7),
       children: [
-        _buildSettingCard(
-          context,
-          title: 'Sound',
-          subtitle: 'Additional controls',
-          value: settings.state.isSound,
-          onChanged: (value) {
-            settings.sound();
-          },
-        ),
-        //_buildSmallDivider(),
-        _buildSettingCard(
-          context,
-          title: 'Vibration',
-          subtitle: 'Additional controls',
-          value: settings.state.isVibration,
-          onChanged: (value) {
-            settings.vibration();
-          },
-        ),
-        //_buildSmallDivider(),
-        _buildSettingCard(
-          context,
-          title: 'Allow Rotation',
-          subtitle: 'Additional controls',
-          value: settings.state.isRotation,
-          onChanged: (value) {
-            settings.rotation();
-          },
-        ),
-        //_buildSmallDivider(),
-        _buildSettingCard(
-          context,
-          title: 'Alerts before round ends',
-          subtitle: 'Additional controls',
-          value: settings.state.isAlert,
-          onChanged: (value) {
-            settings.alert();
-          },
-        ),
+
+          SwitchListTile(
+            value: settings.state.isSound,
+            thumbIcon: thumbIcon,
+            
+            onChanged: (value){
+              settings.sound();
+              _vibrate();
+            },
+            title:  const Text('Sound',style: TextStyle(color: Colors.white),),
+            subtitle:  const Text('Additional controls',style: TextStyle(color: Color(0xFF79747E),)  ) ,
+          ),
+
+          SwitchListTile(
+            value: settings.state.isVibration,
+            thumbIcon: thumbIcon,
+            onChanged: (value){
+              settings.vibration();
+              _vibrate();
+            },
+            title: const Text('Vibration',style: TextStyle(color: Colors.white)),
+            subtitle: const Text('Additional controls',style: TextStyle(color: Color(0xFF79747E),)) ,
+          ),
+
+          SwitchListTile(
+            value: settings.state.isRotation,
+            thumbIcon: thumbIcon,
+            onChanged: (value){
+              settings.rotation();
+              _vibrate();
+            },
+            title: const Text('Rotation',style: TextStyle(color: Colors.white)),
+            subtitle: const Text('Additional controls',style: TextStyle(color: Color(0xFF79747E), ),) ,
+          ),
+
+          SwitchListTile(
+            value: settings.state.isAlert,
+            thumbIcon: thumbIcon,
+            onChanged: (value){
+              settings.alert();
+              _vibrate();
+            },
+            title: const Text('Alerts before round ends',style: TextStyle(color: Colors.white)),
+            subtitle: const Text('Additional controls',style: TextStyle(color: Color(0xFF79747E),)) ,
+          ),
+
         
       ],
     );
   }
 
-  Widget _buildSettingCard(
-    BuildContext context, {
-    required String title,
-    required String subtitle,
-    required bool value,
-    required ValueChanged<bool> onChanged,
-  }) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 6),
-      color: const Color(0xFF2A2A2F), // Darker background for the card
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16), // Increased border radius
-      ),
-      elevation: 5, // Subtle shadow
-      child: ListTile(
-        contentPadding: const EdgeInsets.fromLTRB(10, 5 , 10, 7),
-        title: Text(
-          title,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
-        ),
-        subtitle: Text(
-          subtitle,
-          style: const TextStyle(color: Color(0xFFB0B0B0)),
-        ),
-        trailing: Switch(
-          value: value,
-          onChanged: onChanged,
-          activeTrackColor: const Color(0xFFCE090A),
-          activeColor: Colors.white,
-          //  inactiveTrackColor: Color(0xFFC4C4C4), // Color for the track when inactive
-              inactiveThumbColor: Color(0xFFC4C4C4), // Thumb color when inactive
-
-        ),
-      ),
-    );
+   // Función para realizar una vibración leve
+  void _vibrate() async{
+    if (await Vibration.hasVibrator()) {
+      // Realiza una vibración breve y leve (sin una pausa larga)
+      Vibration.vibrate(duration: 50);
+    }
   }
 
-  Widget _buildSmallDivider() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
-      child: Divider(
-        height: 1,
-        color: Color(0xFFCE090A),
-        thickness: 1, // A thinner divider
-        indent: 40, // Indent to make it shorter
-        endIndent: 40, // Indent to make it shorter
-      ),
-    );
-  }
+
 }
