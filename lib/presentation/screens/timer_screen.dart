@@ -41,11 +41,13 @@ class TimerScreen extends StatelessWidget {
 }
 
 class TimerView extends StatelessWidget {
-  const TimerView({Key? key, required this.timerCubit}) : super(key: key);
+   const TimerView({Key? key, required this.timerCubit}) : super(key: key);
   final TimerCubit timerCubit;
+  
 
   @override
   Widget build(BuildContext context) {
+     final timerBloc = context.read<TimerBloc>(); // Guarda el Bloc antes de abrir el diálogo
     context.read<TimerBloc>().add(
           TimerPreStartedEvent(
             duration: timerCubit.state.duration,
@@ -55,7 +57,7 @@ class TimerView extends StatelessWidget {
         );
     
     void openDialog(BuildContext context){
-    final timerBloc = context.read<TimerBloc>(); // Guarda el Bloc antes de abrir el diálogo
+    
     final state = timerBloc.state.runtimeType;
     print('*********************************************$state****************************************************************'); 
     if(state == TimerRunInProgressState){
@@ -121,9 +123,8 @@ class TimerView extends StatelessWidget {
                   ),
                   color: Theme.of(context).colorScheme.secondary,
                   surfaceTintColor: Colors.transparent,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
+                  child: Padding(                    padding: const EdgeInsets.all(16.0),
+                    child:   Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const SizedBox(height: 10),
@@ -163,7 +164,7 @@ class TimerText extends StatelessWidget {
             return '${toMinutesStr(restTime)}:${toSecondsStr(restTime)}';
           }
           if (state is TimerRunCompleteState) {
-            return 'FIN';
+            return 'END';
           }
           return '${toMinutesStr(duration)}:${toSecondsStr(duration)}';
         }
@@ -218,7 +219,7 @@ class RoundCardsContainer extends StatelessWidget {
               currentRound: currentRound, rounds: rounds, text: 'REST TIME'),
           
           TimerRunCompleteState() =>
-            RoundCards(currentRound: currentRound, rounds: rounds),
+            Poster(text: 'Well done!',timeDelay: 0,),
           
           TimerPreStartPauseState() =>  Poster(text: 'Paused',timeDelay: 0,),
        
