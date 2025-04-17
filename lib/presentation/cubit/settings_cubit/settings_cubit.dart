@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:training_mma_timer/data/local/local_storage_service.dart';
 
 part 'settings_state.dart';
 
@@ -19,32 +20,75 @@ class SettingsCubit extends Cubit<SettingsState> {
                                       isRotation: isRotation,
                                       isVibration: isVibration));
 
-    void sound() => emit(SettingsInitialState(
+
+    void sound() {
+      LocalStorageService.saveSettings(
+      isSound: !state.isSound,
+      isAlert: state.isAlert,
+      isRotation: state.isRotation,
+      isVibration: state.isVibration,
+      );
+      
+      emit(SettingsInitialState(
       isSound: !state.isSound,
       isAlert: state.isAlert,
       isRotation: state.isRotation,
       isVibration: state.isVibration
       ));
 
-    void alert() => emit(SettingsInitialState(
+      
+
+      }
+
+    void alert() { 
+      LocalStorageService.saveSettings(
+      isSound: state.isSound,
+      isAlert: !state.isAlert,
+      isRotation: state.isRotation,
+      isVibration: state.isVibration,
+    );
+
+      emit(SettingsInitialState(
       isSound: state.isSound,
       isAlert: !state.isAlert,
       isRotation: state.isRotation,
       isVibration: state.isVibration
-      ));  
+      ));
 
-      void rotation() => emit(SettingsInitialState(
+      
+    }  
+
+      void rotation()  {
+      LocalStorageService.saveSettings(
+      isSound: state.isSound,
+      isAlert: state.isAlert,
+      isRotation: !state.isRotation,
+      isVibration: state.isVibration,
+      );  
+      emit(SettingsInitialState(
       isSound: state.isSound,
       isAlert: state.isAlert,
       isRotation: !state.isRotation,
       isVibration: state.isVibration
       ));
+      
+      }
 
-      void vibration() => emit(SettingsInitialState(
+      void vibration()  {
+      LocalStorageService.saveSettings(
+      isSound: state.isSound,
+      isAlert: state.isAlert,
+      isRotation: state.isRotation,
+      isVibration: !state.isVibration,
+  );  
+        
+      emit(SettingsInitialState(
       isSound: state.isSound,
       isAlert: state.isAlert,
       isRotation: state.isRotation,
       isVibration: !state.isVibration
       ));  
+      
+      }
 
 }
