@@ -49,6 +49,7 @@ class _ExamplePageState extends State<ExamplePage> {
   }
 
   void _initService() {
+
     FlutterForegroundTask.init(
       androidNotificationOptions: AndroidNotificationOptions(
         channelId: 'foreground_service',
@@ -81,9 +82,10 @@ class _ExamplePageState extends State<ExamplePage> {
         notificationText: 'Tap to return to the app',
         notificationIcon: null,
         notificationButtons: [
-          const NotificationButton(id: 'btn_hello', text: 'hello'),
+          const NotificationButton(id: 'pause', text: 'Pause'),
+          const NotificationButton(id: 'cancel', text: 'Cancel'),
         ],
-        notificationInitialRoute: '/second',
+        notificationInitialRoute: '/timer',
         callback: startCallback,
       );
     }
@@ -99,7 +101,7 @@ class _ExamplePageState extends State<ExamplePage> {
   }
 
   void _incrementCount() {
-    FlutterForegroundTask.sendDataToTask(MyTaskHandler.incrementCountCommand);
+    // FlutterForegroundTask.sendDataToTask(MyTaskHandler.incrementCountCommand);
   }
 
   @override

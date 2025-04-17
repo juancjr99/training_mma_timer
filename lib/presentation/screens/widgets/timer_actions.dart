@@ -9,7 +9,7 @@ class TimerActions extends StatelessWidget {
   const TimerActions({super.key, required this.timerCubit});
   final TimerCubit timerCubit;
   void openDialog(BuildContext context){
-    final timerBloc = context.read<TimerBloc>(); // Guarda el Bloc antes de abrir el diálogo
+    // final timerBloc = context.read<TimerBloc>(); // Guarda el Bloc antes de abrir el diálogo
 
     showDialog(context: context,
     barrierDismissible: false,
@@ -21,7 +21,7 @@ class TimerActions extends StatelessWidget {
         
           FilledButton(
             onPressed: (){ 
-              timerBloc.add(TimerFinishEvent());
+              // timerBloc.add(TimerFinishEvent());
               context.pop();
               context.pop(); // Solo cierra la pantalla si es posible
 
@@ -50,7 +50,7 @@ class TimerActions extends StatelessWidget {
             ...switch (state) {
               TimerInitialState() => [
                   FloatingActionButton(
-
+                    heroTag: 'fab2', // <- dale un tag único
                     child: const Icon(Icons.play_arrow),
                     onPressed: () => context
                         .read<TimerBloc>()
@@ -61,6 +61,7 @@ class TimerActions extends StatelessWidget {
                 ],
               TimerRunInProgressState() => [
                   FloatingActionButton(
+                    heroTag: 'fab3', // <- dale un tag único
                       child: const Icon(Icons.pause),
                       onPressed: () =>
                           context.read<TimerBloc>().add(const TimerRunPausedEvent()),
@@ -80,6 +81,7 @@ class TimerActions extends StatelessWidget {
 
                 TimerRestInProgressState() => [
                   FloatingActionButton(
+                    heroTag: 'fab4', // <- dale un tag único
                     child: const Icon(Icons.pause),
                     onPressed: () =>
                         context.read<TimerBloc>().add(const TimerRestPausedEvent()),
@@ -96,6 +98,7 @@ class TimerActions extends StatelessWidget {
                   FadeInRight(
                     duration: Duration(milliseconds: 200),
                     child: FloatingActionButton(
+                      heroTag: 'fab5', // <- dale un tag único
                       child: const Icon(Icons.play_arrow),
                       onPressed: () =>
                           context.read<TimerBloc>().add(const TimerRunResumedEvent()),
@@ -105,6 +108,7 @@ class TimerActions extends StatelessWidget {
                   FadeInLeft(
                     duration: Duration(milliseconds: 200),
                     child: FloatingActionButton(
+                      heroTag: 'fab6', // <- dale un tag único
                         child: const Icon(Icons.cancel_rounded),
                         onPressed: () { 
                           context.read<TimerBloc>().add(const TimerRunPausedEvent());
@@ -120,6 +124,7 @@ class TimerActions extends StatelessWidget {
                   FadeInRight(
                     duration: Duration(milliseconds: 200),
                     child: FloatingActionButton(
+                      heroTag: 'fab7', // <- dale un tag único
                       child: const Icon(Icons.play_arrow),
                       onPressed: () =>
                           context.read<TimerBloc>().add(const TimerRestResumedEvent()),
@@ -129,6 +134,7 @@ class TimerActions extends StatelessWidget {
                   FadeInLeft(
                     duration: Duration(milliseconds: 200),
                     child: FloatingActionButton(
+                      heroTag: 'fab8', // <- dale un tag único
                         child: const Icon(Icons.cancel_rounded),
                         onPressed: () { 
                           context.read<TimerBloc>().add(const TimerRunPausedEvent());
@@ -144,8 +150,9 @@ class TimerActions extends StatelessWidget {
 
               TimerRunCompleteState() => [
                   FloatingActionButton(
+                    heroTag: 'fab9', // <- dale un tag único
               backgroundColor: Color(0xFFCE090A),
-              child: Icon(Icons.arrow_back_ios_new),
+              child: Icon(Icons.cancel_rounded),
               onPressed: () {
                 context.pop();
               },
@@ -156,6 +163,7 @@ class TimerActions extends StatelessWidget {
                   FadeInRight(
                     duration: Duration(milliseconds: 200),
                     child: FloatingActionButton(
+                      heroTag: 'fab10', // <- dale un tag único
                       child: const Icon(Icons.play_arrow),
                       onPressed: () =>
                           context.read<TimerBloc>().add(const TimerPreStartResumedEvent()),
@@ -165,6 +173,7 @@ class TimerActions extends StatelessWidget {
                   FadeInLeft(
                     duration: Duration(milliseconds: 200),
                     child: FloatingActionButton(
+                      heroTag: 'fab11', // <- dale un tag único
                         child: const Icon(Icons.cancel_rounded),
                         onPressed: () { 
                           context.read<TimerBloc>().add(const TimerPreStartPausedEvent());
@@ -176,12 +185,14 @@ class TimerActions extends StatelessWidget {
               // TODO: Handle this case.
               TimerPreStartInProgressState() => [
                   FloatingActionButton(
+                    heroTag: 'fab12', // <- dale un tag único
                     child: const Icon(Icons.pause),
                     onPressed: () =>
                         context.read<TimerBloc>().add(const TimerPreStartPausedEvent()),
                   ),],
               // TODO: Handle this case.
               TimerStartState() => [FloatingActionButton(
+                heroTag: 'fab13', // <- dale un tag único
                     child: const Icon(Icons.pause),
                     onPressed: () =>
                         context.read<TimerBloc>().add(const TimerRestPausedEvent()),

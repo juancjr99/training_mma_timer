@@ -92,3 +92,14 @@ final int duration;
   final int restTime;
   final int currentRound;
 }
+
+// class StartForegroundService extends TimerEvent {}
+
+// class PauseForegroundService extends TimerEvent {}
+
+// class CancelForegroundService extends TimerEvent {}
+
+// class ForegroundButtonPressed extends TimerEvent {
+//   final String buttonId;
+//   ForegroundButtonPressed(this.buttonId);
+// }

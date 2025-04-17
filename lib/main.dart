@@ -7,9 +7,14 @@ import 'package:training_mma_timer/config/theme/app_theme.dart';
 import 'package:training_mma_timer/presentation/cubit/settings_cubit/settings_cubit.dart';
 import 'package:training_mma_timer/presentation/cubit/timer_cubit/timer_cubit.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
   // Initialize port for communication between TaskHandler and UI.
   FlutterForegroundTask.initCommunicationPort();
+  // Detener el servicio si está corriendo
+  if (await FlutterForegroundTask.isRunningService) {
+    await FlutterForegroundTask.stopService();
+  }
   
   runApp(MultiBlocProvider(
     providers: [

@@ -38,22 +38,25 @@ class _UiControlsView extends StatelessWidget {
     final settings = context.read<SettingsCubit>();
     final List<Map<String, dynamic>> settingsOptions = [
       {
-        'title': 'Sound',
+        'title': 'sound',
+        'subtitle': 'sound at the end of the round',
         'value': settings.state.isSound,
         'onChanged': settings.sound,
       },
       {
         'title': 'Vibration',
+        'subtitle': 'vibrates at the end of the round',
         'value': settings.state.isVibration,
         'onChanged': settings.vibration,
       },
-      {
-        'title': 'Rotation',
-        'value': settings.state.isRotation,
-        'onChanged': settings.rotation,
-      },
+      // {
+      //   'title': 'Rotation',
+      //   'value': settings.state.isRotation,
+      //   'onChanged': settings.rotation,
+      // },
       {
         'title': 'Alerts before round ends',
+        'subtitle': 'countdown to the end of the round',
         'value': settings.state.isAlert,
         'onChanged': settings.alert,
       },
@@ -62,55 +65,23 @@ class _UiControlsView extends StatelessWidget {
     return ListView(
       physics: const ClampingScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(5, 5 , 5, 7),
-      children: [
+      children:settingsOptions.map((settingsOptions) {
+    return SwitchListTile(
+      value: settingsOptions['value'],
+      thumbIcon: thumbIcon,
+      onChanged: (value) {
+        Function fn = settingsOptions['onChanged'];
+        fn(); // Llamar la función del setting
+        _vibrate();
+      },
+      title: Text(
+        settingsOptions['title'],
+        style: const TextStyle(color: Colors.white),
+      ),
+      subtitle:  Text(settingsOptions['subtitle'],style: TextStyle(color: Color(0xFF79747E),)) ,
 
-          SwitchListTile(
-            value: settings.state.isSound,
-            thumbIcon: thumbIcon,
-            
-            onChanged: (value){
-              settings.sound();
-              _vibrate();
-            },
-            title:  const Text('Sound',style: TextStyle(color: Colors.white),),
-            subtitle:  const Text('Additional controls',style: TextStyle(color: Color(0xFF79747E),)  ) ,
-          ),
-
-          SwitchListTile(
-            value: settings.state.isVibration,
-            thumbIcon: thumbIcon,
-            onChanged: (value){
-              settings.vibration();
-              _vibrate();
-            },
-            title: const Text('Vibration',style: TextStyle(color: Colors.white)),
-            subtitle: const Text('Additional controls',style: TextStyle(color: Color(0xFF79747E),)) ,
-          ),
-
-          SwitchListTile(
-            value: settings.state.isRotation,
-            thumbIcon: thumbIcon,
-            onChanged: (value){
-              settings.rotation();
-              _vibrate();
-            },
-            title: const Text('Rotation',style: TextStyle(color: Colors.white)),
-            subtitle: const Text('Additional controls',style: TextStyle(color: Color(0xFF79747E), ),) ,
-          ),
-
-          SwitchListTile(
-            value: settings.state.isAlert,
-            thumbIcon: thumbIcon,
-            onChanged: (value){
-              settings.alert();
-              _vibrate();
-            },
-            title: const Text('Alerts before round ends',style: TextStyle(color: Colors.white)),
-            subtitle: const Text('Additional controls',style: TextStyle(color: Color(0xFF79747E),)) ,
-          ),
-
-        
-      ],
+    );
+  }).toList(),
     );
   }
 
@@ -124,3 +95,54 @@ class _UiControlsView extends StatelessWidget {
 
 
 }
+
+
+//  [
+
+//           SwitchListTile(
+//             value: settings.state.isSound,
+//             thumbIcon: thumbIcon,
+            
+//             onChanged: (value){
+//               settings.sound();
+//               _vibrate();
+//             },
+//             title:  const Text('Sound',style: TextStyle(color: Colors.white),),
+//             subtitle:  const Text('Additional controls',style: TextStyle(color: Color(0xFF79747E),)  ) ,
+//           ),
+
+//           SwitchListTile(
+//             value: settings.state.isVibration,
+//             thumbIcon: thumbIcon,
+//             onChanged: (value){
+//               settings.vibration();
+//               _vibrate();
+//             },
+//             title: const Text('Vibration',style: TextStyle(color: Colors.white)),
+//             subtitle: const Text('Additional controls',style: TextStyle(color: Color(0xFF79747E),)) ,
+//           ),
+
+//           SwitchListTile(
+//             value: settings.state.isRotation,
+//             thumbIcon: thumbIcon,
+//             onChanged: (value){
+//               settings.rotation();
+//               _vibrate();
+//             },
+//             title: const Text('Rotation',style: TextStyle(color: Colors.white)),
+//             subtitle: const Text('Additional controls',style: TextStyle(color: Color(0xFF79747E), ),) ,
+//           ),
+
+//           SwitchListTile(
+//             value: settings.state.isAlert,
+//             thumbIcon: thumbIcon,
+//             onChanged: (value){
+//               settings.alert();
+//               _vibrate();
+//             },
+//             title: const Text('Alerts before round ends',style: TextStyle(color: Colors.white)),
+//             subtitle: const Text('Additional controls',style: TextStyle(color: Color(0xFF79747E),)) ,
+//           ),
+
+        
+//       ],
