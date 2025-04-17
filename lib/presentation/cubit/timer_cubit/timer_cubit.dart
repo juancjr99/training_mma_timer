@@ -12,7 +12,7 @@ class TimerCubit extends Cubit<TimerCubitState> {
   final int duration;
   final int rounds;
   final int restTime;
-  TimerCubit({required this.duration,required this.rounds,required this.restTime}) : super(TimerCubitInitial( duration: 10, rounds: 5, restTime: 5,uniqueId: Uuid().v4()));
+  TimerCubit({required this.duration,required this.rounds,required this.restTime}) : super(TimerCubitInitial( duration: duration, rounds: rounds, restTime: restTime,uniqueId: Uuid().v4()));
 
   
 
