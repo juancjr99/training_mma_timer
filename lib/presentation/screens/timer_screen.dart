@@ -243,6 +243,10 @@ class RoundCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(rounds > 9){
+      return Poster(text: '$currentRound / $rounds',timeDelay: 0,);
+    }
+
     return Row(
       key: ValueKey(currentRound),
       mainAxisAlignment: MainAxisAlignment.center,
